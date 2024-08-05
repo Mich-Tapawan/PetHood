@@ -1,3 +1,10 @@
+:root{
+    --primary: #904646;
+    --secondary: #FFD18D;
+    --light: #FFFEF1;
+    --dark: #793D3D;
+}
+
 .navbar a{
     color:#ffffff;
 }
@@ -14,4 +21,16 @@
 .navbar-brand img{
     width: 50px;
     height: 50px;
+}
+
+.navbar-brand:hover{
+    color: white;
+}
+
+.nav-link:focus{
+    color: var(--secondary);
+}
+
+.nav-link:hover{
+    color: var(--secondary);
 }
