@@ -45,7 +45,8 @@
 }
 
 .c-item{
-    height: 89vh;
+    margin-top: 10vh;
+    height: 90vh;
 }
 
 .c-img{
@@ -80,4 +81,52 @@
 .shop-btn:hover{
     color: var(--primary);
     background-color: var(--light);
+}
+
+.grid-container{
+    display: grid;
+    grid-template-areas:
+    "enlarged enlarged enlarged"
+    "show4 show3 show2";
+}
+
+.grid-container{
+    width: 100%;
+}
+
+.enlarged-img{
+    width: 100%;
+    cursor: pointer;
+}
+.enlarged-img img{
+    width: 100%;
+}
+
+.small-img{
+    margin-top: 5px;
+    height: 200px;
+    width: 210px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.small-img img{
+    height: 100%;
+    width: 100%;
+}
+
+#showcase1{
+    grid-area: enlarged;
+}
+
+#showcase2{
+    grid-area: show2;
+}
+
+#showcase2{
+    grid-area: show3;
+}
+
+#showcase2{
+    grid-area: show4;
 }
