@@ -7,9 +7,10 @@
     <link rel="icon" href="public/assets/brand-logo.png" type="image/x-icon">
     <link rel="stylesheet" href="public/css/main.min.css">
     <link rel="stylesheet" href="public/css/styles.css">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
 </head>
 
-<body>
+<body class="bg-light">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg bg-primary py-3">
       <div class="container-lg">
@@ -37,12 +38,40 @@
         </div>
       </div>
       </nav>
-
-    <!-- Hero -->
-    <h1 class="display-1">hewwoo0</h1>
-
-    <!--  -->
-
+        <div id="hero-carousel" class="carousel slide" data-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item c-item active">
+              <img class="d-block w-100 c-img" src="public/assets/slider1.jpg" alt="First slide">
+            </div>
+            <div class="carousel-item c-item">
+              <img class="d-block w-100 c-img" src="public/assets/slider2.jpeg" alt="Second slide">
+            </div>
+            <div class="carousel-item c-item">
+              <img class="d-block w-100 c-img" src="..." alt="Third slide">
+            </div>
+          </div>
+          <a class="carousel-control-prev" href="#hero-carousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only"></span>
+          </a>
+          <a class="carousel-control-next" href="#hero-carousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only"></span>
+          </a>
+          </div>
+        </div>
+        <section>
+          <div class="container-lg">
+            <div class="row text-primary">
+              <div class="col-6 d-flex justify-content-center flex-column">
+                <h2 class="font-weight-bold">ONLINE SHOPPING</h2>
+                <p>Discover a wide range of high-quality pet products and accessories at unbeatable prices, all from the comfort of your home. From nutritious food and tasty treats to stylish collars and cozy beds, our online store offers an extensive selection to cater to your furry friend's every need.</p>
+                <button type="button" class="btn btn-primary px-0 py-3 shop-btn">Shop Now</button>
+              </div>
+              <div class="col-6"></div>
+            </div>
+          </div>
+        </section>
     <script src="public/js/bootstrap.bundle.min.js"></script>
     <script src="public/js/main.js"></script>
 </body>

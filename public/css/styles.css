@@ -5,6 +5,15 @@
     --dark: #793D3D;
 }
 
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    text-decoration: none;
+    scroll-behavior: smooth;
+}
+
 .navbar a{
     color:#ffffff;
 }
@@ -33,4 +42,42 @@
 
 .nav-link:hover{
     color: var(--secondary);
+}
+
+.c-item{
+    height: 89vh;
+}
+
+.c-img{
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.7);
+}
+
+.row{
+    padding-block: 100px;
+    min-height: 90vh;
+}
+
+.col-6:nth-child(1) h2{
+    font-size: 5rem;
+    letter-spacing: 1rem;
+    margin-bottom: 40px;
+    
+}
+
+.col-6:nth-child(1) p{
+    font-size: 1.2rem;
+    width: 73%;
+    margin-bottom: 40px;
+}
+
+.shop-btn{
+    width: 200px;
+    font-weight:700;
+}
+
+.shop-btn:hover{
+    color: var(--primary);
+    background-color: var(--light);
 }
