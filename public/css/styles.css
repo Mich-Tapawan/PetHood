@@ -157,6 +157,10 @@
     cursor: pointer;
 }
 
+.services-text li:hover{
+    color: var(--secondary);
+}
+
 .services-text img{
     width: 40px;
     padding-bottom: 10px;
@@ -167,12 +171,13 @@
     margin-top: 20px;
     width: 200px;
     font-weight:700;
+    color: var(--primary);
     background-color: #ffffff;
 }
 
 .service-btn:hover{
     color: var(--dark);
-    background-color: #ffffff;
+    background-color: var(--secondary);
     transform: translateY(-1px)
 }
 
