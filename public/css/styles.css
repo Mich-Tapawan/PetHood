@@ -270,7 +270,7 @@
 
 footer input{
     height: 40px;
-    width: 250px;
+    max-width: 250px;
     border-radius: 50px;
     padding-left: 20px;
     border: none;
@@ -388,6 +388,54 @@ footer span{
         width: 150px;
         margin: 30px;
     }
+
+    .ftr-col1{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .footer-brand{
+        font-size: 3rem;
+    }
+
+    .paw-wrapper{
+        width: 70px;
+        margin-right: 20px;
+    }
+
+    .soc-logos a:nth-child(4){
+        margin-right: 0;
+    }
+
+    .ftr-text-wrapper{
+        display: flex;
+        justify-content: center;
+        margin-block: 50px;
+        padding-left: 15%;
+    }
+
+    .newsletter{
+        align-items: center;
+        margin-bottom: 40px;
+    }
+
+    .newsletter input{
+        margin-bottom: 20px;
+    }
+
+    .newsletter h3{
+        text-align: center;
+        width: 300px;
+        font-size: 2rem;
+    }
+
+    footer span{
+        margin-bottom: 20px;
+    }
+
+
 }
 
 @media(max-width: 768px){
