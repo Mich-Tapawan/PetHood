@@ -39,28 +39,37 @@
         </div>
       </div>
       </nav>
-        <div id="hero-carousel" class="carousel slide" data-ride="carousel">
-          <div class="carousel-inner">
-            <div class="carousel-item c-item active">
-              <img class="d-block w-100 c-img" src="public/assets/slider1.jpg" alt="First slide">
-            </div>
-            <div class="carousel-item c-item">
-              <img class="d-block w-100 c-img" src="public/assets/slider2.jpeg" alt="Second slide">
-            </div>
-            <div class="carousel-item c-item">
-              <img class="d-block w-100 c-img" src="..." alt="Third slide">
-            </div>
+      <div id="hero-carousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#hero-carousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#hero-carousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#hero-carousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+          <div class="carousel-item  c-item active ">
+            <img src="/public/assets/slider1.jpg" class="d-block w-100 c-img" alt="...">
           </div>
-          <a class="carousel-control-prev" href="#hero-carousel" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only"></span>
-          </a>
-          <a class="carousel-control-next" href="#hero-carousel" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only"></span>
-          </a>
+          <div class="carousel-item c-item">
+            <img src="/public/assets/slider2.jpeg" class="d-block w-100 c-img" alt="...">
+          </div>
+          <div class="carousel-item c-item">
+            <img src="/public/assets/slider3.jpg" class="d-block w-100 c-img" alt="...">
+          </div>
+          <div class="carousel-caption d-flex flex-column justify-content-center align-items-center">
+            <h1>Your Reliable Furparent Companion</h1>
+            <input type="text" name="location" id="location" placeholder="Enter a location (e.g. City, Province, Region)">
+            <p>Search to see the pet shops, services, and clinics available in areas <span>paws</span> around the Philippines!</p>
           </div>
         </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#hero-carousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#hero-carousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
         <section id="product-sec">
           <div class="container-lg">
             <div class="row text-primary products-row">
