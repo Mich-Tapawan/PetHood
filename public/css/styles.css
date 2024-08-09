@@ -68,8 +68,13 @@
     margin-bottom: 60px;
 }
 
-.carousel-caption input{
+.search-bar{
     width: 80%;
+    position: relative;
+}
+
+.search-bar input{
+    width: 100%;
     height: 60px;
     border-radius: 50px;
     padding-left: 30px;
@@ -77,6 +82,14 @@
     outline: none;
     border: none;
     margin-bottom: 60px;
+}
+
+.search-bar img{
+    position: absolute;
+    right: 3%;
+    bottom: 60%;
+    width: 35px;
+    cursor: pointer;
 }
 
 .carousel-caption p{
@@ -404,11 +417,17 @@ footer span{
         margin-bottom: 60px;
     }
     
-    .carousel-caption input{
+    .search-bar input{
         width: 90%;
         height: 50px;
         padding-left: 20px;
         font-size: 1rem;
+    }
+
+    .search-bar img{
+        right: 8%;
+        bottom: 63%;
+        width: 30px;
     }
 
     .carousel-caption p{
