@@ -1,0 +1,45 @@
+:root{
+    --primary: #904646;
+    --secondary: #FFD18D;
+    --light: #FFFEF1;
+    --dark: #793D3D;
+}
+
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    text-decoration: none;
+    scroll-behavior: smooth;
+}
+
+.navbar a{
+    color:#ffffff;
+}
+
+.navbar-brand{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.navbar-brand img{
+    width: 50px;
+    height: 50px;
+}
+
+.navbar-brand:hover{
+    color: white;
+}
+
+.nav-link:focus{
+    color: var(--secondary);
+}
+
+.nav-link:hover{
+    color: var(--secondary);
+}
