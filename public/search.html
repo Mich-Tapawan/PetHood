@@ -38,12 +38,39 @@
               </div>
             </div>
             </nav>
-            <div class="container-fluid search-container">
-                <input type="text" name="search-loc" id="search-loc" placeholder="Enter a location (e.g. City, Province, Region)">
+            <div class="container-fluid search-container d-flex">
+                <div class="search-bar">
+                    <input type="text" name="search-loc" id="search-loc" placeholder="Enter a location (e.g. City, Province, Region)">
+                    <img src="/public/assets/search-icon.png" alt="" id="search-btn">
+                  </div>
+                  <div class="btn-group select-type">
+                    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      SELECT TYPE
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                      <button class="dropdown-item" type="button">All</button>
+                      <button class="dropdown-item" type="button">Pet Store</button>
+                      <button class="dropdown-item" type="button">Grooming Service</button>
+                      <button class="dropdown-item" type="button">Pet Training</button>
+                      <button class="dropdown-item" type="button">Vetrinary Clinic</button>
+                    </div>
+                  </div>
             </div>
     </header>
-    <main>
-        
+    <main bg-light>
+        <div class="container-lg main-container">
+            <div class="row">
+                <div class="col-6 card-col">
+                    <p>Search result for: <span>location</span></p>
+                    <div class="card-container">
+                    </div>
+                </div>
+                <div class="col-6 map-col">
+                    <div class="map-container"></div>
+                </div>
+            </div>
+        </div>
     </main>
+    <script src="/public/js/search.js"></script>
 </body>
 </html>
