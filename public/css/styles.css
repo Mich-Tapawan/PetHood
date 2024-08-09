@@ -398,12 +398,8 @@ footer span{
     .carousel-caption input{
         width: 90%;
         height: 50px;
-        border-radius: 50px;
-        padding-left: 30px;
+        padding-left: 20px;
         font-size: 1rem;
-        outline: none;
-        border: none;
-        margin-bottom: 60px;
     }
 
     .carousel-caption p{
