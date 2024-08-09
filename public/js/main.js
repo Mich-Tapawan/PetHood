@@ -17,4 +17,16 @@ document.addEventListener('DOMContentLoaded', ()=>{
             location.placeholder ='Enter a location (e.g. City, Province, Region)';
         }
     }
+
+    //Showcase Image Rotation
+    let smallerImages = document.querySelectorAll('.small-img img');
+    let enlargedImage = document.querySelector('.enlarged-img img');
+
+    smallerImages.forEach(img =>{
+        img.addEventListener('click', ()=>{
+            let temp = enlargedImage.src;
+            enlargedImage.src = img.src
+            img.src = temp
+        })
+    });
 });
