@@ -109,6 +109,20 @@
     margin-left: 5px;
 }
 
+#loc-name{
+    margin-top: 20px;
+    font-size: 2.8rem;
+    color: var(--primary);
+}
+
+#loc-add{
+    font-size: 1.3rem;
+}
+
+.map-col span{
+    color: #c3c3c3;
+}
+
 @media (max-width: 1400px){
 }
 
