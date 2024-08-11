@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', ()=>{
     let screenWidth = window.innerWidth; 
-    var location = document.querySelector('#location');
+    var location = document.querySelector('#search');
     placeholderChanger();
 
     window.addEventListener('resize', ()=>{

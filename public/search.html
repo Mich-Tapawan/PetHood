@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/public/assets/brand-logo.png" type="image/x-icon">
     <link rel="stylesheet" href="/public/css/main.min.css">
     <link rel="stylesheet" href="/public/css/search.css">
-    <link rel="icon" href="/public/assets/brand-logo.png" type="image/x-icon">
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
     <title>PetHood - Search</title>
 </head>
@@ -40,7 +42,7 @@
             </nav>
             <div class="container-fluid search-container d-flex">
                 <div class="search-bar">
-                    <input type="text" name="search-loc" id="search-loc" placeholder="Enter a location (e.g. City, Province, Region)">
+                    <input type="text" name="search" id="search" placeholder="Enter a location (e.g. City, Province, Region)">
                     <img src="/public/assets/search-icon.png" alt="" id="search-btn">
                   </div>
                   <div class="btn-group select-type">
@@ -61,16 +63,16 @@
         <div class="container-lg main-container">
             <div class="row">
                 <div class="col-6 card-col">
-                    <p>Search result for: <span>location</span></p>
-                    <div class="card-container">
-                    </div>
+                    <p>Search results for: <span>location</span></p>
+                    <ul id="result-list" class="list-group"></ul>
                 </div>
                 <div class="col-6 map-col">
-                    <div class="map-container"></div>
+                    <div class="map-container" style="height: 75vh;"></div>
                 </div>
             </div>
         </div>
     </main>
+    <script src="../src/app.js"></script>
     <script src="/public/js/search.js"></script>
 </body>
 </html>

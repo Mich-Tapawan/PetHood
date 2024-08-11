@@ -1,0 +1,1 @@
+const searchInput = document.getElementById('search-loc');
