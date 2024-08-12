@@ -23,6 +23,14 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+// Enter inquiry to search
+
+searchInput.addEventListener('keydown', (event)=>{
+    if(event.key === 'Enter'){
+        searchBtn.click();
+    }
+})
+
 searchBtn.addEventListener('click', ()=>{
     if(!searchInput.value){
         return
@@ -38,9 +46,16 @@ async function fetchLocations(query){
     try{
         let result = await fetch(`https://nominatim.openstreetmap.org/search?format=json&polygon=1&addressdetails=1&q=${query}`);
         let parsedResult = await result.json();
-        console.log(parsedResult)
-        console.log(query)
-        setMapList(parsedResult);
+        if(parsedResult.length === 0){
+            searchNone.style.display = 'block';
+            resultList.style.display = 'none';
+            resultText.style.display = 'none';
+            console.log('raws')
+        }
+        else{
+            setMapList(parsedResult);
+        }
+        
     }
     catch(error){
         console.error(error);
@@ -48,31 +63,62 @@ async function fetchLocations(query){
 }
 
 function setMapList(list){
+    resultList.style.display = 'flex';
     for(const marker of currentMarkers){
         map.removeLayer(marker);
     }
 
+    //Removes all previously searched location results
+    while (resultList.firstChild) {
+        resultList.removeChild(resultList.firstChild);
+    }
+
     for(const location of list){
         const li = document.createElement('li');
-        const h2 = 
+        const h2 = document.createElement('h2');
+        const p = document.createElement('p');
+        const span = document.createElement('span');
+
         li.classList.add('list-group-item', 'list-group-item-action');
+        li.style.minHeight = '150px';
+        li.style.padding = '20px';
+        li.style.marginBottom = '20px';
         li.style.cursor = 'pointer';
 
-        li.innerHTML = JSON.stringify({
+        h2.style.color = '#904646'
+        h2.style.marginBottom = '20px';
+        p.style.fontSize = '1rem';
+
+        span.innerHTML = JSON.stringify({
             displayName: location.name,
             address: location.display_name,
             lat: location.lat,
             lon: location.lon
         }, undefined, 2);
 
+        li.appendChild(h2);
+        li.appendChild(p);
+        li.appendChild(span);
+
+        const info = JSON.parse(span.innerHTML);
+        h2.textContent = info.displayName;
+        p.textContent = info.address;
+        span.style.display = 'none';
+
         // Set currently viewed location 
         li.addEventListener('click', (event)=>{
-            for(const child of resultList.children) {
-                child.classList.remove('active');
-            }
-            event.target.classList.add('active');
 
-            const clickedLocation = JSON.parse(event.target.innerHTML);
+            // Set styling on clicked location card
+            for(const child of resultList.children) {
+                child.querySelector('h2').style.color = '#904646';
+                child.querySelector('p').style.color = '#000000';
+                child.style.background = '#ffffff';
+            }
+            li.querySelector('h2').style.color = '#ffffff';
+            li.querySelector('p').style.color = '#ffffff';
+            li.style.background = '#904646';
+
+            const clickedLocation = JSON.parse(span.innerHTML);
             const position = new L.LatLng(clickedLocation.lat, clickedLocation.lon);
             locName.style.display = 'block';
             address.style.display = 'block';
