@@ -3,16 +3,19 @@
 
 const searchInput = document.getElementById('search');
 const searchBtn = document.getElementById('search-btn');
-const resultText = document.querySelector('.card-col p');
-const searchIndicator = document.getElementById('search-indicator');
 const resultList = document.getElementById('result-list');
 const mapContainer = document.getElementById('map');
 const currentMarkers = [];
+
+const resultText = document.querySelector('.card-col p');
+const searchIndicator = document.getElementById('search-indicator');
 const locName = document.getElementById('loc-name');
 const address = document.getElementById('loc-add');
+const searchNone = document.getElementById('search-none');
 
 // Initialize map
 var map = L.map('map').setView([12.8797, 121.7740], 5);
+map.setMinZoom(5);
 
 // Use open street map layer
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -71,6 +74,8 @@ function setMapList(list){
 
             const clickedLocation = JSON.parse(event.target.innerHTML);
             const position = new L.LatLng(clickedLocation.lat, clickedLocation.lon);
+            locName.style.display = 'block';
+            address.style.display = 'block';
             locName.innerHTML = clickedLocation.displayName;
             address.innerHTML = clickedLocation.address;
             map.flyTo(position, 19);
@@ -81,5 +86,7 @@ function setMapList(list){
         resultList.appendChild(li);
         resultText.style.display = 'block';
         searchIndicator.innerHTML = searchInput.value;
+        searchNone.classList.remove('d-flex');
+        searchNone.classList.add('d-none');
     }
 }
