@@ -96,7 +96,25 @@
 
 .main-container{
     margin-top: 200px;
-    min-height: 100vh;
+    min-height: 70vh;
+}
+
+.card-col{
+    padding-right: 80px;
+}
+
+#search-none{
+    padding-top: 50px;
+}
+
+.cat-wrapper{
+    width: 60%;
+}
+.cat-wrapper img{
+    width: 100%;
+}
+#search-none h2{
+    color: #B2B2B2;
 }
 
 .card-col p{

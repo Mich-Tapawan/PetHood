@@ -59,13 +59,19 @@
         <div class="container-lg main-container">
             <div class="row search-row">
                 <div class="col-6 card-col">
+                  <div id="search-none" class="d-flex flex-column justify-content-center align-items-center">
+                    <div class="cat-wrapper">
+                      <img src="/public/assets/gray-cat.png" alt="gray cat">
+                    </div>
+                    <h2>PLEASE ENTER A LOCATION</h2>
+                  </div>
                     <p style="display: none;">Search results for: <span id="search-indicator">location</span></p>
                     <ul id="result-list" class="list-group"></ul>
                 </div>
                 <div class="col-6 map-col">
                     <div id="map" style="height: 70vh; width: 100%;"></div>
-                    <h1 id="loc-name">Brand Name</h1>
-                    <p id="loc-add">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit nostrum porro odit facere quibusdam qui delectus nobis</p>
+                    <h1 id="loc-name" style="display: none;">Brand Name</h1>
+                    <p id="loc-add" style="display: none;">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit nostrum porro odit facere quibusdam qui delectus nobis</p>
                     <span>Map data © OpenStreetMap contributors </span>
                 </div>
             </div>
