@@ -3,6 +3,8 @@
 
 const searchInput = document.getElementById('search');
 const searchBtn = document.getElementById('search-btn');
+const resultText = document.querySelector('.card-col p');
+const searchIndicator = document.getElementById('search-indicator');
 const resultList = document.getElementById('result-list');
 const mapContainer = document.getElementById('map');
 const currentMarkers = [];
@@ -19,8 +21,13 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 searchBtn.addEventListener('click', ()=>{
-    let query = searchInput.value + ' , Philippines'
-    fetchLocations(query);
+    if(!searchInput.value){
+        return
+    }
+    else{
+        let query = 'pet shop '+ searchInput.value + ' , Philippines'
+        fetchLocations(query);
+    }
 })
 
 // fetch data of location from users 
@@ -28,6 +35,8 @@ async function fetchLocations(query){
     try{
         let result = await fetch(`https://nominatim.openstreetmap.org/search?format=json&polygon=1&addressdetails=1&q=${query}`);
         let parsedResult = await result.json();
+        console.log(parsedResult)
+        console.log(query)
         setMapList(parsedResult);
     }
     catch(error){
@@ -40,31 +49,37 @@ function setMapList(list){
         map.removeLayer(marker);
     }
 
-    map.flyTo(new L.LatLng(12.8797, 121.7740), 2);
-
     for(const location of list){
         const li = document.createElement('li');
+        const h2 = 
         li.classList.add('list-group-item', 'list-group-item-action');
+        li.style.cursor = 'pointer';
+
         li.innerHTML = JSON.stringify({
             displayName: location.name,
+            address: location.display_name,
             lat: location.lat,
             lon: location.lon
         }, undefined, 2);
 
         // Set currently viewed location 
         li.addEventListener('click', (event)=>{
-            for(const child of resultList){
+            for(const child of resultList.children) {
                 child.classList.remove('active');
             }
             event.target.classList.add('active');
 
             const clickedLocation = JSON.parse(event.target.innerHTML);
             const position = new L.LatLng(clickedLocation.lat, clickedLocation.lon);
-            map.flyTo(position, 10);
+            locName.innerHTML = clickedLocation.displayName;
+            address.innerHTML = clickedLocation.address;
+            map.flyTo(position, 19);
         });
 
         const position = new L.LatLng(location.lat, location.lon);
         currentMarkers.push(new L.marker(position).addTo(map));
         resultList.appendChild(li);
+        resultText.style.display = 'block';
+        searchIndicator.innerHTML = searchInput.value;
     }
 }
