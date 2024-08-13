@@ -12,6 +12,7 @@ const searchIndicator = document.getElementById('search-indicator');
 const locName = document.getElementById('loc-name');
 const address = document.getElementById('loc-add');
 const searchNone = document.getElementById('search-none');
+const mapCol = document.querySelector('.map-container');
 
 // Initialize map
 var map = L.map('map').setView([12.8797, 121.7740], 5);
@@ -24,11 +25,12 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+//Initialize customized marker design
 var pawIcon = L.icon({
     iconUrl: '../public/assets/redPaw.png',
 
-    iconSize:     [38, 48], // size of the icon
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    iconSize:     [36, 48],
+    popupAnchor:  [-3, -76]
 });
 
 //Activate search from index or main page
@@ -191,6 +193,16 @@ function setMapList(list, type){
             locName.innerHTML = clickedLocation.displayName;
             address.innerHTML = clickedLocation.address;
             map.flyTo(position, 19);
+            
+            // Prevents off-window text content inside the map container
+            if(mapCol.offsetHeight > 600){
+                locName.style.fontSize = '1.8rem';
+                address.style.fontSize = '1.1rem';
+            }
+            else{
+                locName.style.fontSize = '2rem';
+                address.style.fontSize = '1.3rem';
+            }        
         });
 
         const position = new L.LatLng(location.lat, location.lon);
