@@ -58,13 +58,13 @@ searchBtn.addEventListener('click', ()=>{
         for(const marker of currentMarkers){
             map.removeLayer(marker);
         }
-        
+        map.flyTo([12.8797, 121.7740], 5);
         fetchAll(searchInput)
     }
 })
 
 function fetchAll(searchInput){
-    let queries = ['Pet shop, ', 'Grooming, ', 'Pet training', 'Veterinary clinic, '];
+    let queries = ['Pet shop, ', 'Grooming, ', 'Pet School', 'Veterinary clinic, '];
     let emptyCounter = 0;
 
     for(query of queries){
