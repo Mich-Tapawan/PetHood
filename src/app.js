@@ -105,6 +105,7 @@ types.forEach( btn =>{
         else{
             fetchAll(searchInput);
         }
+        map.flyTo([12.8797, 121.7740], 5);
     })
 })
 
