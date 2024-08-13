@@ -16,15 +16,24 @@ const searchNone = document.getElementById('search-none');
 // Initialize map
 var map = L.map('map').setView([12.8797, 121.7740], 5);
 map.setMinZoom(5);
-
+map.dragging.disable();
+    
 // Use open street map layer
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-// Enter inquiry to search
+//Activate search from index or main page
+if(localStorage.getItem('heroSearch')){
+    searchInput.value = localStorage.getItem('heroSearch');
+    console.log(searchInput.value)
+    let query = 'pet shop '+ searchInput.value + ' , Philippines'
+    fetchLocations(query);
+    localStorage.removeItem('heroSearch');
+}
 
+// Enter inquiry to search
 searchInput.addEventListener('keydown', (event)=>{
     if(event.key === 'Enter'){
         searchBtn.click();

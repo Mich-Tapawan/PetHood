@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
         placeholderChanger();
     });
 
-    //Search Placeholder Changer
+    // Search Placeholder Changer
     function placeholderChanger(){
         screenWidth = window.innerWidth;
         if(screenWidth < 768){
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
         }
     }
 
-    //Showcase Image Rotation
+    // Showcase Image Rotation
     let smallerImages = document.querySelectorAll('.small-img img');
     let enlargedImage = document.querySelector('.enlarged-img img');
 
@@ -29,4 +29,18 @@ document.addEventListener('DOMContentLoaded', ()=>{
             img.src = temp
         })
     });
+
+    // Save search to local storage
+    const searchInput = document.getElementById('search');
+    const searchBtn = document.getElementById('search-btn');
+
+    searchInput.addEventListener('keydown', (event)=>{
+        if(event.key === 'Enter'){
+            searchBtn.click();
+        }
+    })
+    searchBtn.addEventListener('click', ()=>{
+        localStorage.setItem('heroSearch', searchInput.value);
+        window.location.href = "public/search.html";
+    })
 });
