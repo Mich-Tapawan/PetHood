@@ -24,6 +24,13 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+var pawIcon = L.icon({
+    iconUrl: '../public/assets/redPaw.png',
+
+    iconSize:     [38, 48], // size of the icon
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
+
 //Activate search from index or main page
 if(localStorage.getItem('heroSearch')){
     searchInput.value = localStorage.getItem('heroSearch');
@@ -186,7 +193,7 @@ function setMapList(list, type){
         });
 
         const position = new L.LatLng(location.lat, location.lon);
-        currentMarkers.push(new L.marker(position).addTo(map));
+        currentMarkers.push(new L.marker(position, {icon: pawIcon}).addTo(map));
         resultList.appendChild(li);
         resultText.style.display = 'block';
         searchIndicator.innerHTML = searchInput.value;
