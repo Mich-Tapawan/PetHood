@@ -1,6 +1,3 @@
-
-//Display the name of the store, type, and full address to each card
-
 const searchInput = document.getElementById('search');
 const searchBtn = document.getElementById('search-btn');
 const resultList = document.getElementById('result-list');
@@ -12,6 +9,7 @@ const searchIndicator = document.getElementById('search-indicator');
 const locName = document.getElementById('loc-name');
 const address = document.getElementById('loc-add');
 const searchNone = document.getElementById('search-none');
+const searchNoneText = document.querySelector('#search-none h2');
 const mapCol = document.querySelector('.map-container');
 
 // Initialize map
@@ -65,23 +63,13 @@ searchBtn.addEventListener('click', ()=>{
     }
 })
 
+let emptyCounter = 0;
 function fetchAll(searchInput){
     let queries = ['Pet shop, ', 'Grooming, ', 'Pet School', 'Veterinary clinic, '];
-    let emptyCounter = 0;
 
     for(query of queries){
         let entry = query + searchInput.value + ' , Philippines';
-        let execute = fetchLocations(entry);
-
-        if (execute === '0'){
-            emptyCounter++;
-        }
-
-        if(emptyCounter === queries.length){
-            searchNone.style.display = 'block';
-            resultList.style.display = 'none';
-            resultText.style.display = 'none';
-        }
+        fetchLocations(entry);
     }
 }
 
@@ -120,7 +108,17 @@ async function fetchLocations(query){
         let result = await fetch(`https://nominatim.openstreetmap.org/search?format=json&polygon=1&addressdetails=1&q=${query}`);
         let parsedResult = await result.json();
         if(parsedResult.length === 0){
-            return 0
+            //Displays search-empty for empty result
+            emptyCounter++;
+            if(emptyCounter == 4){
+                searchNone.classList.remove('d-none');
+                searchNone.classList.add('d-flex');
+                searchNoneText.innerHTML = 'THERE IS NO SUCH PLACE OR RESULT';
+                resultList.style.display = 'none';
+                resultText.style.display = 'none';
+                emptyCounter = 0;
+            }
+            return
         }
         else{
             setMapList(parsedResult, selectedType);
