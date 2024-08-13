@@ -28,8 +28,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 if(localStorage.getItem('heroSearch')){
     searchInput.value = localStorage.getItem('heroSearch');
     console.log(searchInput.value)
-    let query = 'pet shop '+ searchInput.value + ' , Philippines'
-    fetchLocations(query);
+    fetchAll(searchInput)
     localStorage.removeItem('heroSearch');
 }
 
@@ -45,9 +44,61 @@ searchBtn.addEventListener('click', ()=>{
         return
     }
     else{
-        let query = 'pet shop '+ searchInput.value + ' , Philippines'
-        fetchLocations(query);
+         //Resets the result list and the map markers
+        while (resultList.firstChild) {
+            resultList.removeChild(resultList.firstChild);
+            }
+        for(const marker of currentMarkers){
+            map.removeLayer(marker);
+        }
+        
+        fetchAll(searchInput)
     }
+})
+
+function fetchAll(searchInput){
+    let queries = ['pet shop, ', 'grooming, ', 'pet training', 'veterinary clinic, '];
+    let emptyCounter = 0;
+
+    for(query of queries){
+        let entry = query + searchInput.value + ' , Philippines';
+        let execute = fetchLocations(entry);
+
+        if (execute === '0'){
+            emptyCounter++;
+        }
+
+        if(emptyCounter === queries.length){
+            searchNone.style.display = 'block';
+            resultList.style.display = 'none';
+            resultText.style.display = 'none';
+        }
+    }
+}
+
+// filtering types
+const types = document.querySelectorAll('.dropdown-item');
+types.forEach( btn =>{
+    btn.addEventListener('click', ()=>{
+
+        //Resets the result list and the map markers
+        while (resultList.firstChild) {
+            resultList.removeChild(resultList.firstChild);
+            }
+        
+        for(const marker of currentMarkers){
+            map.removeLayer(marker);
+        }
+
+        if(btn.dataset.type != "All"){
+            let value = btn.dataset.type + ', ';
+            let query = value + searchInput.value + ' , Philippines'
+            fetchLocations(query);
+        }
+        else{
+            fetchAll(searchInput);
+        }
+    })
 })
 
 // fetch data of location from users 
@@ -56,10 +107,7 @@ async function fetchLocations(query){
         let result = await fetch(`https://nominatim.openstreetmap.org/search?format=json&polygon=1&addressdetails=1&q=${query}`);
         let parsedResult = await result.json();
         if(parsedResult.length === 0){
-            searchNone.style.display = 'block';
-            resultList.style.display = 'none';
-            resultText.style.display = 'none';
-            console.log('raws')
+            return 0
         }
         else{
             setMapList(parsedResult);
@@ -73,14 +121,6 @@ async function fetchLocations(query){
 
 function setMapList(list){
     resultList.style.display = 'flex';
-    for(const marker of currentMarkers){
-        map.removeLayer(marker);
-    }
-
-    //Removes all previously searched location results
-    while (resultList.firstChild) {
-        resultList.removeChild(resultList.firstChild);
-    }
 
     for(const location of list){
         const li = document.createElement('li');

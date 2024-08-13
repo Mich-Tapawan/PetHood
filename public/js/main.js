@@ -40,7 +40,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
         }
     })
     searchBtn.addEventListener('click', ()=>{
-        localStorage.setItem('heroSearch', searchInput.value);
-        window.location.href = "public/search.html";
+        if(searchInput.value){
+            localStorage.setItem('heroSearch', searchInput.value);
+            window.location.href = "public/search.html";
+        }
     })
 });
