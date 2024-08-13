@@ -57,7 +57,7 @@ searchBtn.addEventListener('click', ()=>{
 })
 
 function fetchAll(searchInput){
-    let queries = ['pet shop, ', 'grooming, ', 'pet training', 'veterinary clinic, '];
+    let queries = ['Pet shop, ', 'Grooming, ', 'Pet training', 'Veterinary clinic, '];
     let emptyCounter = 0;
 
     for(query of queries){
@@ -104,13 +104,16 @@ types.forEach( btn =>{
 // fetch data of location from users 
 async function fetchLocations(query){
     try{
+        let commaIndex = query.indexOf(',');
+        let selectedType = query.slice(0, commaIndex);
+
         let result = await fetch(`https://nominatim.openstreetmap.org/search?format=json&polygon=1&addressdetails=1&q=${query}`);
         let parsedResult = await result.json();
         if(parsedResult.length === 0){
             return 0
         }
         else{
-            setMapList(parsedResult);
+            setMapList(parsedResult, selectedType);
         }
         
     }
@@ -119,12 +122,13 @@ async function fetchLocations(query){
     }
 }
 
-function setMapList(list){
+function setMapList(list, type){
     resultList.style.display = 'flex';
 
     for(const location of list){
         const li = document.createElement('li');
         const h2 = document.createElement('h2');
+        const h5 = document.createElement('h5');
         const p = document.createElement('p');
         const span = document.createElement('span');
 
@@ -134,8 +138,9 @@ function setMapList(list){
         li.style.marginBottom = '20px';
         li.style.cursor = 'pointer';
 
-        h2.style.color = '#904646'
+        h2.style.color = '#904646';
         h2.style.marginBottom = '20px';
+        h5.style.color = '#000000';
         p.style.fontSize = '1rem';
 
         span.innerHTML = JSON.stringify({
@@ -146,11 +151,13 @@ function setMapList(list){
         }, undefined, 2);
 
         li.appendChild(h2);
+        li.appendChild(h5);
         li.appendChild(p);
         li.appendChild(span);
 
         const info = JSON.parse(span.innerHTML);
         h2.textContent = info.displayName;
+        h5.textContent = 'Type: '+ type;
         p.textContent = info.address;
         span.style.display = 'none';
 
@@ -161,9 +168,11 @@ function setMapList(list){
             for(const child of resultList.children) {
                 child.querySelector('h2').style.color = '#904646';
                 child.querySelector('p').style.color = '#000000';
+                child.querySelector('h5').style.color = '#000000';
                 child.style.background = '#ffffff';
             }
             li.querySelector('h2').style.color = '#ffffff';
+            li.querySelector('h5').style.color = '#ffffff';
             li.querySelector('p').style.color = '#ffffff';
             li.style.background = '#904646';
 
