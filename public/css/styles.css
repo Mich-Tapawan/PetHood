@@ -141,7 +141,7 @@
 
 .enlarged-img{
     width: 100%;
-    max-height: 420px;
+    height: 100%;
     object-fit: cover;
 }
 
@@ -153,12 +153,13 @@
 .smaller-grid{
     display: grid;
     height: 100%;
+    grid-template-rows: 200px;
     grid-template-columns: repeat(3, 1fr);
 }
 
 .small-img{
     margin-top: 5px;
-    max-height: 200px;
+    height: 100%;
     object-fit: cover;
     cursor: pointer;
 }
@@ -419,6 +420,14 @@ footer span{
         width: 73%;
         margin-bottom: 40px;
     }
+
+    .grid-container{
+        grid-template-rows: 350px 200px;
+    }
+
+    .smaller-grid{
+        grid-template-rows: 170px;
+    }
     
     .dog-img{
         width: 400px;
@@ -473,6 +482,11 @@ footer span{
     .grid-container{
         padding-left: 10%;
         width: 90%;
+        grid-template-rows: 500px 200px;
+    }
+
+    .smaller-grid{
+        grid-template-rows: 200px;
     }
     
     .product-text{
@@ -591,9 +605,17 @@ footer span{
 }
 
 @media (max-width: 500px){
+    
+    .products-row{
+        padding-bottom: 10px;
+    }
     .grid-container{
         display: grid;
         grid-template-rows: 300px 150px;
         width: 100%;
+    }
+
+    .smaller-grid{
+        grid-template-rows: 150px;
     }
 }
