@@ -1,4 +1,33 @@
 document.addEventListener('DOMContentLoaded', ()=>{
+
+    // Checks if all images are completely rendered
+    function checkAllContentLoaded(){
+        let content = document.querySelectorAll('main *');
+        let allLoaded = true;
+
+        content.forEach(element=>{
+            if (element.tagName === 'IMG' && !element.complete) {
+                allLoaded = false;
+            }
+        })
+
+        return allLoaded;
+    }
+
+    function initializeContent(){
+        
+        if(checkAllContentLoaded()){
+            document.querySelector('.loader-container').classList.replace('d-flex', 'd-none');
+            document.querySelector('main').classList.replace('d-none', 'd-block');
+        }
+        else{
+            setTimeout(initializeContent, 200);
+        }
+        
+    }
+
+    initializeContent()
+
     let screenWidth = window.innerWidth; 
     var location = document.querySelector('#search');
     placeholderChanger();
