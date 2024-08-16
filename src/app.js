@@ -11,6 +11,7 @@ const address = document.getElementById('loc-add');
 const searchNone = document.getElementById('search-none');
 const searchNoneText = document.querySelector('#search-none h2');
 const mapCol = document.querySelector('.map-container');
+const loader = document.querySelector('.loader-container');
 
 // Initialize map
 var map = L.map('map').setView([12.8797, 121.7740], 5);
@@ -101,6 +102,10 @@ types.forEach( btn =>{
 
 // fetch data of location from users 
 async function fetchLocations(query){
+    loader.classList.replace('d-none', 'd-flex');
+    searchNone.classList.replace('d-flex', 'd-none');
+    resultText.style.display = 'none';
+
     try{
         let commaIndex = query.indexOf(',');
         let selectedType = query.slice(0, commaIndex);
@@ -111,8 +116,7 @@ async function fetchLocations(query){
             //Displays search-empty for empty result
             emptyCounter++;
             if(emptyCounter == 4){
-                searchNone.classList.remove('d-none');
-                searchNone.classList.add('d-flex');
+                searchNone.classList.replace('d-none', 'd-flex');
                 searchNoneText.innerHTML = 'THERE IS NO SUCH PLACE OR RESULT';
                 resultList.style.display = 'none';
                 resultText.style.display = 'none';
@@ -127,6 +131,9 @@ async function fetchLocations(query){
     }
     catch(error){
         console.error(error);
+    }
+    finally{
+        loader.classList.replace('d-flex', 'd-none');
     }
 }
 
@@ -208,7 +215,6 @@ function setMapList(list, type){
         resultList.appendChild(li);
         resultText.style.display = 'block';
         searchIndicator.innerHTML = searchInput.value;
-        searchNone.classList.remove('d-flex');
-        searchNone.classList.add('d-none');
+        searchNone.classList.replace('d-flex', 'd-none');
     }
 }
