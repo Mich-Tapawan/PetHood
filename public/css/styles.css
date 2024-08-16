@@ -135,12 +135,7 @@
 
 .grid-container{
     display: grid;
-    grid-template-areas:
-    "enlarged enlarged enlarged"
-    "show4 show3 show2";
-}
-
-.grid-container{
+    grid-template-rows: 400px 200px;
     width: 100%;
 }
 
@@ -155,10 +150,15 @@
     height: 100%;
 }
 
+.smaller-grid{
+    display: grid;
+    height: 100%;
+    grid-template-columns: repeat(3, 1fr);
+}
+
 .small-img{
     margin-top: 5px;
     max-height: 200px;
-    width: 210px;
     object-fit: cover;
     cursor: pointer;
 }
@@ -170,22 +170,6 @@
 
 .small-img:hover{
     border: 5px solid var(--dark);
-}
-
-#showcase1{
-    grid-area: enlarged;
-}
-
-#showcase2{
-    grid-area: show2;
-}
-
-#showcase2{
-    grid-area: show3;
-}
-
-#showcase2{
-    grid-area: show4;
 }
 
 .services-container{
@@ -603,5 +587,13 @@ footer span{
 
     .services-text button{
         align-self: start;
+    }
+}
+
+@media (max-width: 500px){
+    .grid-container{
+        display: grid;
+        grid-template-rows: 300px 150px;
+        width: 100%;
     }
 }
