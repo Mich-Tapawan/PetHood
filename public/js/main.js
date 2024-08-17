@@ -1,5 +1,25 @@
 document.addEventListener('DOMContentLoaded', ()=>{
 
+    // Checks if the content has already been previously loaded
+    let alreadyLoaded = localStorage.getItem('initialLoad') || false;
+    console.log(alreadyLoaded)
+
+    if(alreadyLoaded === false){
+        localStorage.removeItem('initialLoad');
+        initializeContent()
+    }
+    else{
+        document.querySelector('.loader-container').classList.replace('d-flex', 'd-none');
+        document.querySelector('main').classList.replace('d-none', 'd-block');
+    }
+
+    let navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link =>{
+        link.addEventListener('click', ()=>{
+            localStorage.setItem('initialLoad', 'true');
+        })
+    })
+
     // Checks if all images are completely rendered
     function checkAllContentLoaded(){
         let content = document.querySelectorAll('main *');
@@ -23,10 +43,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
         else{
             setTimeout(initializeContent, 200);
         }
-        
-    }
-
-    initializeContent()
+    }   
 
     let screenWidth = window.innerWidth; 
     var location = document.querySelector('#search');
