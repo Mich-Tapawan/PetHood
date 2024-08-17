@@ -130,7 +130,8 @@
 }
 
 .map-container{
-    display: none;
+    position: fixed;
+    width: 41%;
 }
 
 #loc-name{
