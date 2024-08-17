@@ -129,6 +129,10 @@
     margin-left: 5px;
 }
 
+.map-container{
+    display: none;
+}
+
 #loc-name{
     margin-top: 20px;
     font-size: 2.8rem;
@@ -199,8 +203,20 @@
     .search-bar{
         width: 100%;
     }
+
+    .card-col{
+        padding-right: 0px;
+    }
+
 }
 
 @media (max-width: 768px) {
 
+    #search-none{
+        margin-right: 15px;
+    }
+    
+    .cat-wrapper{
+        width: 40%;
+    }
 }
