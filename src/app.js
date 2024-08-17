@@ -10,8 +10,11 @@ const locName = document.getElementById('loc-name');
 const address = document.getElementById('loc-add');
 const searchNone = document.getElementById('search-none');
 const searchNoneText = document.querySelector('#search-none h2');
+const cardCol = document.querySelector('.card-col');
 const mapCol = document.querySelector('.map-container');
 const loader = document.querySelector('.loader-container');
+let screenWidth = window.innerWidth;
+let isClicked = false;
 
 // Initialize map
 var map = L.map('map').setView([12.8797, 121.7740], 5);
@@ -31,6 +34,10 @@ var pawIcon = L.icon({
     iconSize:     [36, 48],
     popupAnchor:  [-3, -76]
 });
+
+if(screenWidth < 768){
+    mapCol.style.display = 'none';
+}
 
 //Activate search from index or main page
 if(localStorage.getItem('heroSearch')){
@@ -207,7 +214,10 @@ function setMapList(list, type){
             else{
                 locName.style.fontSize = '2rem';
                 address.style.fontSize = '1.3rem';
-            }        
+            }
+
+            isClicked = true;
+            displayContainer(isClicked);        
         });
 
         const position = new L.LatLng(location.lat, location.lon);
@@ -216,5 +226,28 @@ function setMapList(list, type){
         resultText.style.display = 'block';
         searchIndicator.innerHTML = searchInput.value;
         searchNone.classList.replace('d-flex', 'd-none');
+    }
+}
+
+window.addEventListener('resize', ()=>{
+    displayContainer(isClicked);  
+})
+
+function displayContainer(isClicked){
+    screenWidth = window.innerWidth;
+    if(screenWidth < 768){
+        if(isClicked){
+            cardCol.style.display = 'none';
+            mapCol.style.display = 'block';
+            mapCol.style.width = '95%';
+        }
+        else{
+            mapCol.style.display = 'none';
+        }
+    }
+    else{
+        cardCol.style.display = 'block';
+        mapCol.style.display = 'block';
+        mapCol.style.width = '41%';
     }
 }

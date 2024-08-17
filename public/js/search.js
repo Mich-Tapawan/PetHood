@@ -21,13 +21,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
         }
     }
 
-    function displayMap(){
-        screenWidth = window.innerWidth;
-        if(screenWidth < 768){
-            mapContainer.style.display = 'none';
-        }
-        else{
-            mapContainer.style.display = 'block';
-        }
-    }
+    // function displayMap(){
+    //     screenWidth = window.innerWidth;
+    //     if(screenWidth < 768){
+    //         mapContainer.style.display = 'none';
+    //     }
+    //     else{
+    //         mapContainer.style.display = 'block';
+    //     }
+    // }
 })
