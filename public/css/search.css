@@ -210,14 +210,18 @@
     .search-container{
         padding-inline: 15px;
     }
+    
     .search-bar{
         width: 100%;
+    }
+
+    .map-col{
+        padding-left: 40px;
     }
 
     .card-col{
         padding-right: 0px;
     }
-
 }
 
 @media (max-width: 768px) {
@@ -228,5 +232,17 @@
     
     .cat-wrapper{
         width: 40%;
+    }
+    
+    .main-container{
+        margin-top: 160px;
+    }
+
+    .search-container{
+        margin-top: -9vh;
+    }
+
+    .map-col{
+        padding-left: 12px;
     }
 }
