@@ -69,6 +69,12 @@ searchBtn.addEventListener('click', ()=>{
         }
         map.flyTo([12.8797, 121.7740], 5);
         fetchAll(searchInput)
+
+        screenWidth = window.innerWidth;
+        if(screenWidth <= 758){
+            mapCol.style.display = 'none';
+            cardCol.style.display = 'block';
+        }
     }
 })
 
@@ -103,6 +109,11 @@ types.forEach( btn =>{
         }
         else{
             fetchAll(searchInput);
+        }
+        screenWidth = window.innerWidth;
+        if(screenWidth <= 758){
+            mapCol.style.display = 'none';
+            cardCol.style.display = 'block';
         }
         map.flyTo([12.8797, 121.7740], 5);
     })
