@@ -134,6 +134,15 @@
     width: 41%;
 }
 
+#return-btn{
+    position: absolute;
+    top: 3%;
+    left: 90%;
+    width: 30px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
 #loc-name{
     margin-top: 20px;
     font-size: 2.8rem;
