@@ -12,6 +12,7 @@ const searchNone = document.getElementById('search-none');
 const searchNoneText = document.querySelector('#search-none h2');
 const cardCol = document.querySelector('.card-col');
 const mapCol = document.querySelector('.map-container');
+const returnBtn = document.querySelector('#return-btn');
 const loader = document.querySelector('.loader-container');
 let screenWidth = window.innerWidth;
 let isClicked = false;
@@ -226,8 +227,15 @@ function setMapList(list, type){
         resultText.style.display = 'block';
         searchIndicator.innerHTML = searchInput.value;
         searchNone.classList.replace('d-flex', 'd-none');
+        map.dragging.enable();
     }
 }
+
+
+returnBtn.addEventListener('click', ()=>{
+    mapCol.style.display = 'none';
+    cardCol.style.display = 'block';
+})
 
 window.addEventListener('resize', ()=>{
     displayContainer(isClicked);  
@@ -240,6 +248,7 @@ function displayContainer(isClicked){
             cardCol.style.display = 'none';
             mapCol.style.display = 'block';
             mapCol.style.width = '95%';
+            returnBtn.style.display = 'block';
         }
         else{
             mapCol.style.display = 'none';
@@ -249,5 +258,6 @@ function displayContainer(isClicked){
         cardCol.style.display = 'block';
         mapCol.style.display = 'block';
         mapCol.style.width = '41%';
+        returnBtn.style.display = 'none';
     }
 }
