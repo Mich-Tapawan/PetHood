@@ -26,9 +26,16 @@ app.get('/createtable', (req, res)=>{
     })
 })
 
-app.get('/addpost1', (req, res)=>{
-    
-})
+app.get('/addpost', (req, res) => {
+    let userID = 1234;
+    let favorite = 'nyakak';
+    let sql = 'INSERT INTO posts (userID, favorite) VALUES (?, ?)';
+    db.query(sql, [userID, favorite], (err, result) => {
+        if (err) throw err;
+        console.log(result);
+        res.send('Added post...');
+    });
+});
 
 app.listen('3000', ()=>{
     console.log('port running at 3000')
