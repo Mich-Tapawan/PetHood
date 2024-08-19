@@ -37,6 +37,34 @@ app.get('/addpost', (req, res) => {
     });
 });
 
+app.get('/getpost', (req, res) => {
+    let sql = 'SELECT * FROM posts';
+    db.query(sql, (err, results) => {
+        if (err) throw err;
+        console.log(results);
+        res.send('selected all posts...');
+    });
+});
+
+app.get('/getpost/:id', (req, res) => {
+    let sql = `SELECT * FROM posts WHERE id = ${req.params.id}`;
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        console.log(result);
+        res.send('Post fetched...');
+    });
+});
+
+app.get('/updatepost/:id', (req, res) => {
+    let newFavorite = 'nyakak2';
+    let sql = `UPDATE posts SET favorite = '${newFavorite}' WHERE id = ${req.params.id}`;
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        console.log(result);
+        res.send('Post updated...');
+    });
+});
+
 app.listen('3000', ()=>{
     console.log('port running at 3000')
 })
