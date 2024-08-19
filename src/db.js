@@ -63,7 +63,7 @@ app.get('/updatepost/:id', (req, res) => {
         console.log(result);
         res.send('Post updated...');
     });
-});
+}); 
 
 app.listen('3000', ()=>{
     console.log('port running at 3000')
