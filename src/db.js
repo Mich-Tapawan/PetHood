@@ -27,8 +27,6 @@ app.get('/createtable', (req, res)=>{
 })
 
 app.get('/addpost', (req, res) => {
-    let userID = 1234;
-    let favorite = 'nyakak';
     let sql = 'INSERT INTO posts (userID, favorite) VALUES (?, ?)';
     db.query(sql, [userID, favorite], (err, result) => {
         if (err) throw err;
