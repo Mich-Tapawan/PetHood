@@ -222,6 +222,7 @@ function setMapList(list, type){
             img.style.display = 'block';
 
             const clickedLocation = JSON.parse(span.innerHTML);
+            localStorage.setItem('locationInfo', JSON.stringify(clickedLocation));
             const position = new L.LatLng(clickedLocation.lat, clickedLocation.lon);
             locName.style.display = 'block';
             address.style.display = 'block';
@@ -243,13 +244,17 @@ function setMapList(list, type){
             displayContainer(isClicked);      
         });
 
-        // Bookmark icon on click
+        // Bookmark icon toggling and sending JSON data to server
         img.addEventListener('click', (e) => {
             e.stopPropagation(); // Prevents triggering the li click event
+            let location = JSON.parse(localStorage.getItem('locationInfo'));
+            let userID = localStorage.getItem('userID');
             if(notMarked){
                 img.src = '../public/assets/bookmark-fill.png';
+                sendLocationData(userID, location);
             } else {
                 img.src = '../public/assets/bookmark.png';
+                removeLocationData(userID, location);
             }
             notMarked = !notMarked;
         });
@@ -292,5 +297,35 @@ function displayContainer(isClicked){
         mapCol.style.display = 'block';
         mapCol.style.width = '41%';
         returnBtn.style.display = 'none';
+    }
+}
+
+async function sendLocationData(userID, data){
+    try{
+        let response = await fetch('http://localhost:3000/addpost', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({userID, data})
+        })
+        let result = await response.json();
+        console.log(result)
+    }
+    catch(error){
+        console.error(error);
+    }
+}
+
+async function removeLocationData(userID, data){
+    try{
+        let response = await fetch('http://localhost:3000//deletepost',{
+            method: 'DELETE',
+            header: {'Content-Type':'application/json'},
+            body: JSON.stringify({userID, data})
+        });
+        let result = await response.json();
+        console.log(result);
+    }
+    catch(error){
+        console.error(error);
     }
 }
