@@ -1,5 +1,6 @@
 const express = require('express');
 const mysql = require('mysql');
+const cors = require('cors');
 
 var db = mysql.createConnection({
     host     : 'sql12.freesqldatabase.com',
@@ -16,52 +17,47 @@ db.connect((err)=>{
 });
 
 const app = express();
+app.use(cors());
+app.use(express.json());
 
-app.get('/createtable', (req, res)=>{
-    let sql = 'CREATE TABLE posts( userID int PRIMARY KEY, favorite text)'
-    db.query(sql, (err, result)=>{
-        if(err) throw err;
-        console.log(result);
-        res.send('Post table created...');  
-    })
-})
+// Checks if the userID already exists
+app.post('/getUser', (req, res) => {
+    let {userID, favorite} = req.body;
 
-app.get('/addpost', (req, res) => {
-    let sql = 'INSERT INTO posts (userID, favorite) VALUES (?, ?)';
-    db.query(sql, [userID, favorite], (err, result) => {
-        if (err) throw err;
-        console.log(result);
-        res.send('Added post...');
+    let sql = 'SELECT * FROM posts where userID = ?';
+    db.query(sql, [userID], (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Server error');
+            return;
+        }
+
+        if(results.length > 0){
+            // Updates the favorites of existing user
+            let updatesql = `UPDATE posts SET favorite = ? WHERE userID = ?`;
+            db.query(updatesql, [favorite, userID], (err, result) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).send('Server error');
+                    return;
+                }
+                res.send('Favorite updated successfully');
+            });
+        }
+        else{
+            // Creates a new user instance
+            let addsql = 'INSERT INTO posts (userID, favorite) VALUES (?, ?)';
+            db.query(addsql, [userID, favorite], (err, result) =>{
+                if (err) {
+                    console.error(err);
+                    res.status(500).send('Server error');
+                    return;
+                }
+                res.send('New post added successfully');
+            });
+        }
     });
 });
-
-app.get('/getpost', (req, res) => {
-    let sql = 'SELECT * FROM posts';
-    db.query(sql, (err, results) => {
-        if (err) throw err;
-        console.log(results);
-        res.send('selected all posts...');
-    });
-});
-
-app.get('/getpost/:id', (req, res) => {
-    let sql = `SELECT * FROM posts WHERE id = ${req.params.id}`;
-    db.query(sql, (err, result) => {
-        if (err) throw err;
-        console.log(result);
-        res.send('Post fetched...');
-    });
-});
-
-app.get('/updatepost/:id', (req, res) => {
-    let newFavorite = 'nyakak2';
-    let sql = `UPDATE posts SET favorite = '${newFavorite}' WHERE id = ${req.params.id}`;
-    db.query(sql, (err, result) => {
-        if (err) throw err;
-        console.log(result);
-        res.send('Post updated...');
-    });
-}); 
 
 app.listen('3000', ()=>{
     console.log('port running at 3000')

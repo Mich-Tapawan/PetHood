@@ -251,11 +251,10 @@ function setMapList(list, type){
             let userID = localStorage.getItem('userID');
             if(notMarked){
                 img.src = '../public/assets/bookmark-fill.png';
-                sendLocationData(userID, location);
             } else {
                 img.src = '../public/assets/bookmark.png';
-                removeLocationData(userID, location);
             }
+            sendLocationData(userID, location);
             notMarked = !notMarked;
         });
 
@@ -302,28 +301,13 @@ function displayContainer(isClicked){
 
 async function sendLocationData(userID, data){
     try{
-        let response = await fetch('http://localhost:3000/addpost', {
+        let response = await fetch('http://localhost:3000/getUser', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({userID, data})
+            body: JSON.stringify({userID: userID, favorite: data})
         })
         let result = await response.json();
         console.log(result)
-    }
-    catch(error){
-        console.error(error);
-    }
-}
-
-async function removeLocationData(userID, data){
-    try{
-        let response = await fetch('http://localhost:3000//deletepost',{
-            method: 'DELETE',
-            header: {'Content-Type':'application/json'},
-            body: JSON.stringify({userID, data})
-        });
-        let result = await response.json();
-        console.log(result);
     }
     catch(error){
         console.error(error);
