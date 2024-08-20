@@ -165,6 +165,7 @@ function setMapList(list, type){
         const h5 = document.createElement('h5');
         const p = document.createElement('p');
         const span = document.createElement('span');
+        const img = document.createElement('img');
 
         li.classList.add('list-group-item', 'list-group-item-action');
         li.style.minHeight = '150px';
@@ -177,6 +178,13 @@ function setMapList(list, type){
         h5.style.color = '#000000';
         p.style.fontSize = '1rem';
 
+        img.src = '../public/assets/bookmark.png';
+        img.style.position = 'absolute';
+        img.style.width = '50px';
+        img.style.left = '89%';
+        img.style.bottom = '70%';
+        img.style.display = 'none';
+
         span.innerHTML = JSON.stringify({
             displayName: location.name,
             address: location.display_name,
@@ -185,6 +193,7 @@ function setMapList(list, type){
         }, undefined, 2);
 
         li.appendChild(h2);
+        li.appendChild(img);
         li.appendChild(h5);
         li.appendChild(p);
         li.appendChild(span);
@@ -194,9 +203,10 @@ function setMapList(list, type){
         h5.textContent = 'Type: '+ type;
         p.textContent = info.address;
         span.style.display = 'none';
+        let notMarked = true;
 
         // Set currently viewed location 
-        li.addEventListener('click', (event)=>{
+        li.addEventListener('click', ()=>{
 
             // Set styling on clicked location card
             for(const child of resultList.children) {
@@ -209,6 +219,7 @@ function setMapList(list, type){
             li.querySelector('h5').style.color = '#ffffff';
             li.querySelector('p').style.color = '#ffffff';
             li.style.background = '#904646';
+            img.style.display = 'block';
 
             const clickedLocation = JSON.parse(span.innerHTML);
             const position = new L.LatLng(clickedLocation.lat, clickedLocation.lon);
@@ -229,7 +240,18 @@ function setMapList(list, type){
             }
 
             isClicked = true;
-            displayContainer(isClicked);        
+            displayContainer(isClicked);      
+        });
+
+        // Bookmark icon on click
+        img.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevents triggering the li click event
+            if(notMarked){
+                img.src = '../public/assets/bookmark-fill.png';
+            } else {
+                img.src = '../public/assets/bookmark.png';
+            }
+            notMarked = !notMarked;
         });
 
         const position = new L.LatLng(location.lat, location.lon);
