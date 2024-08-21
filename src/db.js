@@ -22,9 +22,16 @@ app.use(express.json());
 
 // Checks if the userID already exists
 app.post('/getUser', (req, res) => {
-    let {userID, favorite} = req.body;
+    let {userID, favorite, state} = req.body;
+    let {displayName, address, lat, lon} = favorite;
+    console.log(userID)
+    console.log(state)
+    console.log(displayName )
+    console.log(address)
+    console.log(lat)
+    console.log(lon)
 
-    let sql = 'SELECT * FROM posts where userID = ?';
+    let sql = 'SELECT * FROM details where user_id = ?';
     db.query(sql, [userID], (err, results) => {
         if (err) {
             console.error(err);
@@ -32,30 +39,16 @@ app.post('/getUser', (req, res) => {
             return;
         }
 
-        if(results.length > 0){
-            // Updates the favorites of existing user
-            let updatesql = `UPDATE posts SET favorite = ? WHERE userID = ?`;
-            db.query(updatesql, [favorite, userID], (err, result) => {
-                if (err) {
-                    console.error(err);
-                    res.status(500).send('Server error');
-                    return;
-                }
-                res.send('Favorite updated successfully');
-            });
-        }
-        else{
-            // Creates a new user instance
-            let addsql = 'INSERT INTO posts (userID, favorite) VALUES (?, ?)';
-            db.query(addsql, [userID, favorite], (err, result) =>{
-                if (err) {
-                    console.error(err);
-                    res.status(500).send('Server error');
-                    return;
-                }
-                res.send('New post added successfully');
-            });
-        }
+        // Creates a new user instance
+        let addsql = 'INSERT INTO details (user_id, shop_name, address, lat, lon) VALUES (?, ?, ?, ?, ?)';
+        db.query(addsql, [userID, displayName, address, lat, lon], (err, result) =>{
+            if (err) {
+                console.error(err);
+                res.status(500).send('Server error');
+                return;
+            }
+            res.send('New post added successfully');
+        });
     });
 });
 
