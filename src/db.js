@@ -20,16 +20,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Checks if the userID already exists
+// // Delete or add record
 app.post('/getUser', (req, res) => {
     let {userID, favorite, state} = req.body;
     let {displayName, address, lat, lon} = favorite;
-    console.log(userID)
-    console.log(state)
-    console.log(displayName )
-    console.log(address)
-    console.log(lat)
-    console.log(lon)
+    console.log('Request body:', req.body);
 
     let sql = 'SELECT * FROM details where user_id = ?';
     db.query(sql, [userID], (err, results) => {
@@ -39,16 +34,32 @@ app.post('/getUser', (req, res) => {
             return;
         }
 
-        // Creates a new user instance
-        let addsql = 'INSERT INTO details (user_id, shop_name, address, lat, lon) VALUES (?, ?, ?, ?, ?)';
-        db.query(addsql, [userID, displayName, address, lat, lon], (err, result) =>{
-            if (err) {
-                console.error(err);
-                res.status(500).send('Server error');
-                return;
-            }
-            res.send('New post added successfully');
-        });
+        if(state){
+            let delsql = 'DELETE FROM details WHERE shop_name = ?';
+            db.query(delsql, [displayName], (err, result)=>{
+                if(err){
+                    console.log(err);
+                    res.status(500).send('server error');
+                    return;
+                }
+                if (result.affectedRows > 0) {
+                    res.json({ message: 'Post deleted successfully' });
+                } else {
+                    res.status(404).json({ message: 'Post not found' });
+                }
+            })
+        }
+        else{
+            let addsql = 'INSERT INTO details (user_id, shop_name, address, lat, lon) VALUES (?, ?, ?, ?, ?)';
+            db.query(addsql, [userID, displayName, address, lat, lon], (err, result) =>{
+                if (err) {
+                    console.error(err);
+                    res.status(500).send('Server error');
+                    return;
+                }
+                res.json({ message: 'Post added successfully' });
+            });
+        }
     });
 });
 
