@@ -213,6 +213,7 @@ function setMapList(list, type){
                 child.querySelector('h2').style.color = '#904646';
                 child.querySelector('p').style.color = '#000000';
                 child.querySelector('h5').style.color = '#000000';
+                child.querySelector('img').style.display = 'none';
                 child.style.background = '#ffffff';
             }
             li.querySelector('h2').style.color = '#ffffff';
