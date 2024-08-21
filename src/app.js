@@ -254,8 +254,8 @@ function setMapList(list, type){
             } else {
                 img.src = '../public/assets/bookmark.png';
             }
-            sendLocationData(userID, location);
             notMarked = !notMarked;
+            sendLocationData(userID, location, notMarked);
         });
 
         const position = new L.LatLng(location.lat, location.lon);
@@ -299,12 +299,12 @@ function displayContainer(isClicked){
     }
 }
 
-async function sendLocationData(userID, data){
+async function sendLocationData(userID, data, notMarked){
     try{
         let response = await fetch('http://localhost:3000/getUser', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({userID: userID, favorite: data})
+            body: JSON.stringify({userID: userID, favorite: data, state:notMarked})
         })
         let result = await response.json();
         console.log(result)
