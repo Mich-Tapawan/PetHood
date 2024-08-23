@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', ()=>{
     let screenWidth = window.innerWidth; 
+    let searchContainer = document.getElementById('search-container');
+    let burgerIcon = document.querySelector('.navbar-toggler-icon');
+    let navList = document.querySelector('#navbarNav');
     let location = document.querySelector('#search');
     placeholderChanger();
     let user = checkUser();
@@ -22,6 +25,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
             location.placeholder ='Enter a location (e.g. City, Province, Region)';
         }
     }
+
+    burgerIcon.addEventListener('click', ()=>{
+        searchContainer.style.zIndex = '1000';
+        navList.style.zIndex = '2000';
+    })
 
     function generateUser(){
         return Date.now();

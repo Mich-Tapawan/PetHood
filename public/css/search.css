@@ -261,6 +261,14 @@
         margin-left: 5%;
     }
 
+    .main-container{
+        margin-top: 220px;
+    }
+
+    .search-container{
+        margin-top: -16vh;
+    }
+
     .map-col{
         padding-left: 40px;
     }
@@ -279,14 +287,15 @@
     .cat-wrapper{
         width: 40%;
     }
-    
+
     .main-container{
-        margin-top: 160px;
+        margin-top: 210px;
     }
 
     .search-container{
-        margin-top: -9vh;
+        margin-top: -15vh;
     }
+    
 
     .map-col{
         padding-left: 12px;
