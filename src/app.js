@@ -162,69 +162,12 @@ function setMapList(list, type){
     resultList.style.display = 'flex';
 
     for(const location of list){
-        const li = document.createElement('li');
-        const h2 = document.createElement('h2');
-        const h5 = document.createElement('h5');
-        const p = document.createElement('p');
-        const span = document.createElement('span');
-        const img = document.createElement('img');
-
-        li.classList.add('list-group-item', 'list-group-item-action');
-        li.style.minHeight = '150px';
-        li.style.padding = '20px';
-        li.style.marginBottom = '20px';
-        li.style.cursor = 'pointer';
-
-        h2.style.color = '#904646';
-        h2.style.marginBottom = '20px';
-        h2.style.width = '90%';
-        h5.style.color = '#000000';
-        p.style.fontSize = '1rem';
-
-        img.src = '../public/assets/bookmark.png';
-        img.style.position = 'absolute';
-        img.style.width = '50px';
-        img.style.left = '89%';
-        img.style.bottom = '70%';
-        img.style.display = 'none';
-
-        span.innerHTML = JSON.stringify({
-            displayName: location.name,
-            address: location.display_name,
-            lat: location.lat,
-            lon: location.lon
-        }, undefined, 2);
-
-        li.appendChild(h2);
-        li.appendChild(img);
-        li.appendChild(h5);
-        li.appendChild(p);
-        li.appendChild(span);
-
-        const info = JSON.parse(span.innerHTML);
-        h2.textContent = info.displayName;
-        h5.textContent = 'Type: '+ type;
-        p.textContent = info.address;
-        span.style.display = 'none';
+        let {li, img, span} = createCards(location, type);
         let notMarked = true;
 
         // Set currently viewed location 
         li.addEventListener('click', ()=>{
-
-            // Set styling on clicked location card
-            for(const child of resultList.children) {
-                child.querySelector('h2').style.color = '#904646';
-                child.querySelector('p').style.color = '#000000';
-                child.querySelector('h5').style.color = '#000000';
-                child.querySelector('img').style.display = 'none';
-                child.style.background = '#ffffff';
-            }
-            li.querySelector('h2').style.color = '#ffffff';
-            li.querySelector('h5').style.color = '#ffffff';
-            li.querySelector('p').style.color = '#ffffff';
-            li.style.background = '#904646';
-            img.style.display = 'block';
-
+            cardClicked(li, img);
             const clickedLocation = JSON.parse(span.innerHTML);
             localStorage.setItem('locationInfo', JSON.stringify(clickedLocation));
             const position = new L.LatLng(clickedLocation.lat, clickedLocation.lon);
@@ -233,16 +176,6 @@ function setMapList(list, type){
             locName.innerHTML = clickedLocation.displayName;
             address.innerHTML = clickedLocation.address;
             map.flyTo(position, 19);
-            
-            // Prevents off-window text content inside the map container
-            if(mapCol.offsetHeight > 600){
-                locName.style.fontSize = '1.8rem';
-                address.style.fontSize = '1.1rem';
-            }
-            else{
-                locName.style.fontSize = '2rem';
-                address.style.fontSize = '1.3rem';
-            }
 
             isClicked = true;
             displayContainer(isClicked);
@@ -260,7 +193,7 @@ function setMapList(list, type){
                 img.src = '../public/assets/bookmark.png';
             }
             notMarked = !notMarked;
-            sendLocationData(userID, location, notMarked);
+            sendLocationData(userID, location, notMarked, type);
         });
 
         const position = new L.LatLng(location.lat, location.lon);
@@ -273,6 +206,80 @@ function setMapList(list, type){
     }
 }
 
+function createCards(location, type){
+    const li = document.createElement('li');
+    const h2 = document.createElement('h2');
+    const h5 = document.createElement('h5');
+    const p = document.createElement('p');
+    const span = document.createElement('span');
+    const img = document.createElement('img');
+
+    li.classList.add('list-group-item', 'list-group-item-action');
+    li.style.minHeight = '150px';
+    li.style.padding = '20px';
+    li.style.marginBottom = '20px';
+    li.style.cursor = 'pointer';
+
+    h2.style.color = '#904646';
+    h2.style.marginBottom = '20px';
+    h2.style.width = '90%';
+    h5.style.color = '#000000';
+    p.style.fontSize = '1rem';
+
+    img.src = '../public/assets/bookmark.png';
+    img.style.position = 'absolute';
+    img.style.width = '50px';
+    img.style.left = '89%';
+    img.style.bottom = '70%';
+    img.style.display = 'none';
+
+    span.innerHTML = JSON.stringify({
+        displayName: location.shop_name,
+        address: location.address,
+        lat: location.lat,
+        lon: location.lon
+    }, undefined, 2);
+
+    li.appendChild(h2);
+    li.appendChild(img);
+    li.appendChild(h5);
+    li.appendChild(p);
+    li.appendChild(span);
+
+    const info = JSON.parse(span.innerHTML);
+    h2.textContent = info.displayName;
+    h5.textContent = 'Type: '+ type;
+    p.textContent = info.address;
+    span.style.display = 'none';
+
+    return {li, img, span}
+};
+
+function cardClicked(li, img){
+    // Set styling on clicked location card
+    for(const child of resultList.children) {
+        child.querySelector('h2').style.color = '#904646';
+        child.querySelector('p').style.color = '#000000';
+        child.querySelector('h5').style.color = '#000000';
+        child.querySelector('img').style.display = 'none';
+        child.style.background = '#ffffff';
+    }
+    li.querySelector('h2').style.color = '#ffffff';
+    li.querySelector('h5').style.color = '#ffffff';
+    li.querySelector('p').style.color = '#ffffff';
+    li.style.background = '#904646';
+    img.style.display = 'block';
+                
+    // Prevents off-window text content inside the map container
+    if(mapCol.offsetHeight > 600){
+        locName.style.fontSize = '1.8rem';
+        address.style.fontSize = '1.1rem';
+    }
+    else{
+        locName.style.fontSize = '2rem';
+        address.style.fontSize = '1.3rem';
+    }
+};
 
 returnBtn.addEventListener('click', ()=>{
     mapCol.style.display = 'none';
@@ -311,12 +318,12 @@ function bookmarkPosition(){
     }
 }
 
-async function sendLocationData(userID, data, notMarked){
+async function sendLocationData(userID, data, notMarked, type){
     try{
         let response = await fetch('http://localhost:3000/getUser', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({userID: userID, favorite: data, state:notMarked})
+            body: JSON.stringify({userID: userID, favorite: data, state: notMarked, type: type})
         })
         let result = await response.json();
         console.log(result)
@@ -329,12 +336,16 @@ async function sendLocationData(userID, data, notMarked){
 // Favorites Section
 
 favBtn.addEventListener('click', ()=>{
-    let user = localStorage.getItem('userID');
-    console.log(user)
-    getFavorites(user)
+    let userID = localStorage.getItem('userID');
+    console.log(userID)
+    getFavorites(userID)
 })
 
 async function getFavorites(userID) {
+    loader.classList.replace('d-none', 'd-flex');
+    searchNone.classList.replace('d-flex', 'd-none');
+    let types = [];
+
     try{
         let response = await fetch('http://localhost:3000/getFavorites',{
             method: 'POST',
@@ -343,8 +354,64 @@ async function getFavorites(userID) {
         });
         let result = await response.json();
         console.log(result);
+        for(let record of result){
+            types.push(record.type);
+            console.log('type ',record.type);
+        }
+        displayFavorites(result, types)
     }
     catch(error){
-        console.error(err);
+        console.error(error);
+    }
+    finally{
+        loader.classList.replace('d-flex', 'd-none');
+    }
+}
+
+function displayFavorites(list, types){
+    favList.style.display = 'flex';
+    let typeCounter = 0;
+
+    for(const location of list){
+        let {li, img, span} = createCards(location, types[typeCounter]);
+        typeCounter++;
+        let notMarked = true;
+
+        // Set currently viewed location 
+        li.addEventListener('click', ()=>{
+            cardClicked(li, img);
+            const clickedLocation = JSON.parse(span.innerHTML);
+            localStorage.setItem('locationInfo', JSON.stringify(clickedLocation));
+            const position = new L.LatLng(clickedLocation.lat, clickedLocation.lon);
+            locName.style.display = 'block';
+            address.style.display = 'block';
+            locName.innerHTML = clickedLocation.displayName;
+            address.innerHTML = clickedLocation.address;
+            map.flyTo(position, 19);
+
+            isClicked = true;
+            displayContainer(isClicked);
+            bookmarkPosition();      
+        });
+
+        // Bookmark icon toggling and sending JSON data to server
+        img.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevents triggering the li click event
+            let location = JSON.parse(localStorage.getItem('locationInfo'));
+            let userID = localStorage.getItem('userID');
+            if(notMarked){
+                img.src = '../public/assets/bookmark-fill.png';
+            } else {
+                img.src = '../public/assets/bookmark.png';
+            }
+            notMarked = !notMarked;
+            sendLocationData(userID, location, notMarked, type);
+        });
+
+        const position = new L.LatLng(location.lat, location.lon);
+        currentMarkers.push(new L.marker(position, {icon: pawIcon}).addTo(map));
+        favList.appendChild(li);
+        searchNone.classList.replace('d-flex', 'd-none');
+        map.dragging.enable();
     }
 }

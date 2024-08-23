@@ -59,7 +59,7 @@ app.post('/identifyUser', (req, res)=>{
 
 // Delete or add record
 app.post('/getUser', (req, res) => {
-    let {userID, favorite, state} = req.body;
+    let {userID, favorite, state, type} = req.body;
     let {displayName, address, lat, lon} = favorite;
     console.log('Request body:', req.body);
 
@@ -87,8 +87,8 @@ app.post('/getUser', (req, res) => {
             })
         }
         else{
-            let addsql = 'INSERT INTO details (user_id, shop_name, address, lat, lon) VALUES (?, ?, ?, ?, ?)';
-            db.query(addsql, [userID, displayName, address, lat, lon], (err, result) =>{
+            let addsql = 'INSERT INTO details (user_id, shop_name, type, address, lat, lon) VALUES (?, ?, ?, ?, ?, ?)';
+            db.query(addsql, [userID, displayName, type, address, lat, lon], (err, result) =>{
                 if (err) {
                     console.error(err);
                     res.status(500).send('Server error');
