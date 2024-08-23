@@ -39,21 +39,24 @@
             <div class="container-fluid search-container">
               <div class="container-lg">
                 <div class="row">
-                  <div class="search-bar">
+                  <div class="col-lg-6 search-bar">
                     <input type="text" name="search" id="search" placeholder="Enter a location (e.g. City, Province, Region)">
                     <img src="/public/assets/search-icon.png" alt="" id="search-btn">
                   </div>
-                  <div class="btn-group select-type">
-                    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      SELECT TYPE
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right">
-                      <button class="dropdown-item" type="button" data-type ="All">All</button>
-                      <button class="dropdown-item" type="button" data-type ="pet shop">Pet Store</button>
-                      <button class="dropdown-item" type="button" data-type ="grooming">Grooming Service</button>
-                      <button class="dropdown-item" type="button" data-type ="pet training">Pet Training</button>
-                      <button class="dropdown-item" type="button" data-type ="veterinary clinic">Vetrinary Clinic</button>
+                  <div class="col-lg-6 search-bar-btns">
+                    <div class="btn-group select-type">
+                      <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        SELECT TYPE
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right">
+                        <button class="dropdown-item" type="button" data-type ="All">All</button>
+                        <button class="dropdown-item" type="button" data-type ="pet shop">Pet Store</button>
+                        <button class="dropdown-item" type="button" data-type ="grooming">Grooming Service</button>
+                        <button class="dropdown-item" type="button" data-type ="pet training">Pet Training</button>
+                        <button class="dropdown-item" type="button" data-type ="veterinary clinic">Vetrinary Clinic</button>
+                      </div>
                     </div>
+                    <button id="favorites">Favorites</button>
                   </div>
                 </div>
               </div>
