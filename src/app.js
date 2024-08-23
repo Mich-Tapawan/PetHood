@@ -15,6 +15,7 @@ const mapCol = document.querySelector('.map-container');
 const returnBtn = document.querySelector('#return-btn');
 const loader = document.querySelector('.loader-container');
 const favBtn = document.querySelector('#favorites');
+const favContainer = document.querySelector('.favorites-container');
 const favList = document.querySelector('#fav-list');
 let screenWidth = window.innerWidth;
 let isClicked = false;
@@ -162,7 +163,8 @@ function setMapList(list, type){
     resultList.style.display = 'flex';
 
     for(const location of list){
-        let {li, img, span} = createCards(location, type);
+        let {li, img, span} = createCards(location, type, false);
+        console.log(li, img, span)
         let notMarked = true;
 
         // Set currently viewed location 
@@ -206,7 +208,7 @@ function setMapList(list, type){
     }
 }
 
-function createCards(location, type){
+function createCards(location, type, forBookmark){
     const li = document.createElement('li');
     const h2 = document.createElement('h2');
     const h5 = document.createElement('h5');
@@ -233,12 +235,22 @@ function createCards(location, type){
     img.style.bottom = '70%';
     img.style.display = 'none';
 
-    span.innerHTML = JSON.stringify({
-        displayName: location.shop_name,
-        address: location.address,
-        lat: location.lat,
-        lon: location.lon
-    }, undefined, 2);
+    if(forBookmark){
+        span.innerHTML = JSON.stringify({
+            displayName: location.shop_name,
+            address: location.address,
+            lat: location.lat,
+            lon: location.lon
+        }, undefined, 2);
+    }
+    else{
+        span.innerHTML = JSON.stringify({
+            displayName: location.name,
+            address: location.displayName,
+            lat: location.lat,
+            lon: location.lon
+        }, undefined, 2);
+    }
 
     li.appendChild(h2);
     li.appendChild(img);
@@ -257,7 +269,7 @@ function createCards(location, type){
 
 function cardClicked(li, img){
     // Set styling on clicked location card
-    for(const child of resultList.children) {
+    for(const child of favList.children) {
         child.querySelector('h2').style.color = '#904646';
         child.querySelector('p').style.color = '#000000';
         child.querySelector('h5').style.color = '#000000';
@@ -335,10 +347,27 @@ async function sendLocationData(userID, data, notMarked, type){
 
 // Favorites Section
 
+let favClicked = true;
 favBtn.addEventListener('click', ()=>{
     let userID = localStorage.getItem('userID');
-    console.log(userID)
-    getFavorites(userID)
+
+    //Resets the result list and the map markers
+    while (favList.firstChild) {
+        favList.removeChild(favList.firstChild);
+        }
+            
+    for(const marker of currentMarkers){
+        map.removeLayer(marker);
+    }
+    if(favClicked === true){
+        favContainer.style.display = 'block';
+        getFavorites(userID)
+    }
+    else{
+        favContainer.style.display = 'none';
+        searchNone.classList.replace('d-none','d-flex');
+    }
+    favClicked = !favClicked;
 })
 
 async function getFavorites(userID) {
@@ -356,7 +385,6 @@ async function getFavorites(userID) {
         console.log(result);
         for(let record of result){
             types.push(record.type);
-            console.log('type ',record.type);
         }
         displayFavorites(result, types)
     }
@@ -373,8 +401,7 @@ function displayFavorites(list, types){
     let typeCounter = 0;
 
     for(const location of list){
-        let {li, img, span} = createCards(location, types[typeCounter]);
-        typeCounter++;
+        let {li, img, span} = createCards(location, types[typeCounter], true);
         let notMarked = true;
 
         // Set currently viewed location 
@@ -388,7 +415,7 @@ function displayFavorites(list, types){
             locName.innerHTML = clickedLocation.displayName;
             address.innerHTML = clickedLocation.address;
             map.flyTo(position, 19);
-
+            img.src = '../public/assets/bookmark-fill.png';
             isClicked = true;
             displayContainer(isClicked);
             bookmarkPosition();      
@@ -399,13 +426,8 @@ function displayFavorites(list, types){
             e.stopPropagation(); // Prevents triggering the li click event
             let location = JSON.parse(localStorage.getItem('locationInfo'));
             let userID = localStorage.getItem('userID');
-            if(notMarked){
-                img.src = '../public/assets/bookmark-fill.png';
-            } else {
-                img.src = '../public/assets/bookmark.png';
-            }
-            notMarked = !notMarked;
-            sendLocationData(userID, location, notMarked, type);
+            sendLocationData(userID, location, true, types[typeCounter]);
+            favList.removeChild(li);
         });
 
         const position = new L.LatLng(location.lat, location.lon);
@@ -413,5 +435,6 @@ function displayFavorites(list, types){
         favList.appendChild(li);
         searchNone.classList.replace('d-flex', 'd-none');
         map.dragging.enable();
+        typeCounter++;
     }
 }
