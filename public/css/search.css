@@ -110,12 +110,6 @@
     margin-left: 10%;
 }
 
-#favorites:hover{
-    color: var(--primary);
-    background-color: var(--secondary);
-    border: 2px solid var(--primary);
-}
-
 .main-container{
     margin-top: 200px;
     min-height: 70vh;

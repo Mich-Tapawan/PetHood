@@ -19,6 +19,7 @@ const favContainer = document.querySelector('.favorites-container');
 const favList = document.querySelector('#fav-list');
 let screenWidth = window.innerWidth;
 let isClicked = false;
+let favClicked = true;
 
 // Initialize map
 var map = L.map('map').setView([12.8797, 121.7740], 5);
@@ -46,7 +47,6 @@ if(screenWidth < 768){
 //Activate search from index or main page
 if(localStorage.getItem('heroSearch')){
     searchInput.value = localStorage.getItem('heroSearch');
-    console.log(searchInput.value)
     fetchAll(searchInput)
     localStorage.removeItem('heroSearch');
 }
@@ -63,6 +63,7 @@ searchBtn.addEventListener('click', ()=>{
         return
     }
     else{
+        favContainer.style.display = 'none';
          //Resets the result list and the map markers
         while (resultList.firstChild) {
             resultList.removeChild(resultList.firstChild);
@@ -164,12 +165,11 @@ function setMapList(list, type){
 
     for(const location of list){
         let {li, img, span} = createCards(location, type, false);
-        console.log(li, img, span)
         let notMarked = true;
 
         // Set currently viewed location 
         li.addEventListener('click', ()=>{
-            cardClicked(li, img);
+            cardClicked(resultList, li, img);
             const clickedLocation = JSON.parse(span.innerHTML);
             localStorage.setItem('locationInfo', JSON.stringify(clickedLocation));
             const position = new L.LatLng(clickedLocation.lat, clickedLocation.lon);
@@ -246,7 +246,7 @@ function createCards(location, type, forBookmark){
     else{
         span.innerHTML = JSON.stringify({
             displayName: location.name,
-            address: location.displayName,
+            address: location.display_name,
             lat: location.lat,
             lon: location.lon
         }, undefined, 2);
@@ -267,9 +267,9 @@ function createCards(location, type, forBookmark){
     return {li, img, span}
 };
 
-function cardClicked(li, img){
+function cardClicked(list, li, img){
     // Set styling on clicked location card
-    for(const child of favList.children) {
+    for(const child of list.children) {
         child.querySelector('h2').style.color = '#904646';
         child.querySelector('p').style.color = '#000000';
         child.querySelector('h5').style.color = '#000000';
@@ -347,7 +347,6 @@ async function sendLocationData(userID, data, notMarked, type){
 
 // Favorites Section
 
-let favClicked = true;
 favBtn.addEventListener('click', ()=>{
     let userID = localStorage.getItem('userID');
 
@@ -361,12 +360,21 @@ favBtn.addEventListener('click', ()=>{
     }
     if(favClicked === true){
         favContainer.style.display = 'block';
+        favBtn.style.color = '#904646';
+        favBtn.style.background = '#FFD18D';
+        favBtn.style.border = '1px solid #904646';
         getFavorites(userID)
     }
     else{
         favContainer.style.display = 'none';
+        favBtn.style.color = 'white';
+        favBtn.style.background = '#904646';
+        favBtn.style.border = 'none';
         searchNone.classList.replace('d-none','d-flex');
     }
+    resultList.style.display = 'none';
+    resultText.style.display = 'none';
+    searchIndicator.style.display = 'none';
     favClicked = !favClicked;
 })
 
@@ -382,7 +390,6 @@ async function getFavorites(userID) {
             body: JSON.stringify({userID:userID})
         });
         let result = await response.json();
-        console.log(result);
         for(let record of result){
             types.push(record.type);
         }
@@ -406,7 +413,7 @@ function displayFavorites(list, types){
 
         // Set currently viewed location 
         li.addEventListener('click', ()=>{
-            cardClicked(li, img);
+            cardClicked(favList, li, img);
             const clickedLocation = JSON.parse(span.innerHTML);
             localStorage.setItem('locationInfo', JSON.stringify(clickedLocation));
             const position = new L.LatLng(clickedLocation.lat, clickedLocation.lon);
