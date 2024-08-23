@@ -175,6 +175,7 @@ function setMapList(list, type){
 
         h2.style.color = '#904646';
         h2.style.marginBottom = '20px';
+        h2.style.width = '90%';
         h5.style.color = '#000000';
         p.style.fontSize = '1rem';
 
@@ -242,7 +243,8 @@ function setMapList(list, type){
             }
 
             isClicked = true;
-            displayContainer(isClicked);      
+            displayContainer(isClicked);
+            bookmarkPosition();      
         });
 
         // Bookmark icon toggling and sending JSON data to server
@@ -297,6 +299,13 @@ function displayContainer(isClicked){
         mapCol.style.display = 'block';
         mapCol.style.width = '41%';
         returnBtn.style.display = 'none';
+    }
+}
+
+function bookmarkPosition(){
+    let screenWidth = window.innerWidth;
+    if(screenWidth < 992){
+        img.style.left = '88%';
     }
 }
 
