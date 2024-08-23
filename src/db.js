@@ -32,8 +32,6 @@ app.post('/identifyUser', (req, res)=>{
             res.status(404).json({message:'Search error'});
             return;
         }
-        console.log(userID);
-        console.log(result.length);
         if(result.length === 1){
             let updateSQL = 'UPDATE users SET last_active = ? WHERE userID = ?';
             db.query(updateSQL, [curDate, userID], (err, result)=>{
@@ -101,6 +99,20 @@ app.post('/getUser', (req, res) => {
         }
     });
 });
+
+// Send all favorites from User
+app.post('/getFavorites', (req, res)=>{
+    let {userID} = req.body
+    let getFavSQL = 'SELECT * FROM details WHERE user_id = ?'
+    db.query(getFavSQL, [userID], (err, result)=>{
+        if(err){
+            console.error(err);
+            res.status(404).json({message:'Request error'});
+            return;
+        }
+        res.json(result)
+    })
+})
 
 app.listen('3000', ()=>{
     console.log('port running at 3000')

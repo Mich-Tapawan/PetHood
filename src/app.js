@@ -14,6 +14,8 @@ const cardCol = document.querySelector('.card-col');
 const mapCol = document.querySelector('.map-container');
 const returnBtn = document.querySelector('#return-btn');
 const loader = document.querySelector('.loader-container');
+const favBtn = document.querySelector('#favorites');
+const favList = document.querySelector('#fav-list');
 let screenWidth = window.innerWidth;
 let isClicked = false;
 
@@ -321,5 +323,28 @@ async function sendLocationData(userID, data, notMarked){
     }
     catch(error){
         console.error(error);
+    }
+}
+
+// Favorites Section
+
+favBtn.addEventListener('click', ()=>{
+    let user = localStorage.getItem('userID');
+    console.log(user)
+    getFavorites(user)
+})
+
+async function getFavorites(userID) {
+    try{
+        let response = await fetch('http://localhost:3000/getFavorites',{
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({userID:userID})
+        });
+        let result = await response.json();
+        console.log(result);
+    }
+    catch(error){
+        console.error(err);
     }
 }
