@@ -195,7 +195,6 @@ function setMapList(list, type, userID){
         img.addEventListener('click', (e) => {
             e.stopPropagation(); // Prevents triggering the li click event
             let location = JSON.parse(localStorage.getItem('locationInfo'));
-            console.log('from setmaplist'+notMarked)
             if(notMarked === false || locSaved === true){
                 img.src = '../public/assets/bookmark.png';
                 notMarked = true;
@@ -347,7 +346,6 @@ async function sendLocationData(userID, data, notMarked, type){
             body: JSON.stringify({userID: userID, favorite: data, state: notMarked, type: type})
         })
         let result = await response.json();
-        console.log(result)
     }
     catch(error){
         console.error(error);
@@ -457,7 +455,6 @@ function displayFavorites(list, types){
 async function updateBookmarks(userID, location, img){
     try{
         let saved = await isSaved(userID, location, img);
-        console.log('isSaved?'+saved)
         if( saved === true){
             img.src = '../public/assets/bookmark-fill.png'
             locSaved = true;
