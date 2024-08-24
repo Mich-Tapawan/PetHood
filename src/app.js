@@ -467,7 +467,7 @@ async function updateBookmarks(userID, location, img){
     catch(error){
         console.error(error)
     }
-}
+} 
 
 //Updates bookmark card icon during search
 async function isSaved(userID, location, img) {
