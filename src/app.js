@@ -20,6 +20,7 @@ const favList = document.querySelector('#fav-list');
 let screenWidth = window.innerWidth;
 let isClicked = false;
 let favClicked = true;
+let locSaved = false;
 
 // Initialize map
 var map = L.map('map').setView([12.8797, 121.7740], 5);
@@ -64,6 +65,10 @@ searchBtn.addEventListener('click', ()=>{
     }
     else{
         favContainer.style.display = 'none';
+        favBtn.style.color = 'white';
+        favBtn.style.background = '#904646';
+        favBtn.style.border = 'none';
+        favClicked = true;
          //Resets the result list and the map markers
         while (resultList.firstChild) {
             resultList.removeChild(resultList.firstChild);
@@ -148,7 +153,8 @@ async function fetchLocations(query){
             return
         }
         else{
-            setMapList(parsedResult, selectedType);
+            let userID = localStorage.getItem('userID');
+            setMapList(parsedResult, selectedType, userID);
         }
         
     }
@@ -160,7 +166,7 @@ async function fetchLocations(query){
     }
 }
 
-function setMapList(list, type){
+function setMapList(list, type, userID){
     resultList.style.display = 'flex';
 
     for(const location of list){
@@ -181,20 +187,23 @@ function setMapList(list, type){
 
             isClicked = true;
             displayContainer(isClicked);
-            bookmarkPosition();      
+            bookmarkPosition();
+            updateBookmarks(userID, location, img)      
         });
 
         // Bookmark icon toggling and sending JSON data to server
         img.addEventListener('click', (e) => {
             e.stopPropagation(); // Prevents triggering the li click event
             let location = JSON.parse(localStorage.getItem('locationInfo'));
-            let userID = localStorage.getItem('userID');
-            if(notMarked){
-                img.src = '../public/assets/bookmark-fill.png';
-            } else {
+            console.log('from setmaplist'+notMarked)
+            if(notMarked === false || locSaved === true){
                 img.src = '../public/assets/bookmark.png';
+                notMarked = true;
             }
-            notMarked = !notMarked;
+            else{
+                img.src = '../public/assets/bookmark-fill.png';
+                notMarked = false;
+                }
             sendLocationData(userID, location, notMarked, type);
         });
 
@@ -409,7 +418,6 @@ function displayFavorites(list, types){
 
     for(const location of list){
         let {li, img, span} = createCards(location, types[typeCounter], true);
-        let notMarked = true;
 
         // Set currently viewed location 
         li.addEventListener('click', ()=>{
@@ -443,5 +451,46 @@ function displayFavorites(list, types){
         searchNone.classList.replace('d-flex', 'd-none');
         map.dragging.enable();
         typeCounter++;
+    }
+}
+
+async function updateBookmarks(userID, location, img){
+    try{
+        let saved = await isSaved(userID, location, img);
+        console.log('isSaved?'+saved)
+        if( saved === true){
+            img.src = '../public/assets/bookmark-fill.png'
+            locSaved = true;
+        }
+        else{
+            img.src = '../public/assets/bookmark.png';
+            locSaved = false;
+        }
+    }
+    catch(error){
+        console.error(error)
+    }
+}
+
+//Updates bookmark card icon during search
+async function isSaved(userID, location, img) {
+    try{
+        let response = await fetch('http://localhost:3000/getFavorites',{
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({userID:userID})
+        });
+        let result = await response.json();
+
+        for(let savedLoc of result){
+            if(savedLoc.shop_name === location.name){ 
+                img.src = '../public/assets/bookmark-fill.png';
+                return true;
+            }
+        }
+        return false;
+    }
+    catch(error){
+        console.error(error);
     }
 }
