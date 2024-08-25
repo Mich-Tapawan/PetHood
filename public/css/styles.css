@@ -628,7 +628,6 @@ footer span{
 
     .search-bar input{
         width: 120%;
-        margin-right: 20px;
     }
 
     .carousel-control-prev{
@@ -649,8 +648,7 @@ footer span{
     }
 
     .ftr-text-wrapper{
-        display: flex;
-        justify-content: space-between;
+        display: block;
         margin-block: 50px;
     }
 
