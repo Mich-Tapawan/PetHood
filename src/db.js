@@ -121,7 +121,7 @@ app.post('/getFavorites', (req, res)=>{
 //Error and disconnection handling
 db.on('error', (err) => {
     console.error('Database error:', err);
-    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+    if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.fatal) {
         handleDisconnect();
     } else {
         throw err;
