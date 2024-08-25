@@ -35,7 +35,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 //Initialize customized marker design
 var pawIcon = L.icon({
-    iconUrl: '../assets/redPaw.png',
+    iconUrl: '../public/assets/redPaw.png',
 
     iconSize:     [36, 48],
     popupAnchor:  [-3, -76]
