@@ -631,7 +631,7 @@ footer span{
     }
 
     .product-text h2{
-        font-size: 3rem;
+        font-size: 2.5rem;
     }
     
     .shop-btn{
@@ -639,6 +639,6 @@ footer span{
     }
 
     .ftr-texts:nth-child(1){
-        padding-left: 10%;
+        padding-left: 40%;
     }
 }
