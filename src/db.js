@@ -17,7 +17,11 @@ db.connect((err)=>{
 });
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'https://pet-hood.vercel.app',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
+}));
 app.use(express.json());
 
 // Add User and update last active
