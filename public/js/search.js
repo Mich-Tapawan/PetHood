@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
     async function identifyUser(userID, currentDate){
         try{
-            let response = await fetch('http://localhost:3000/identifyUser', {
+            let response = await fetch('https://pethood.onrender.com/identifyUser', {
                 method:'POST',
                 headers: {'Content-Type':'application/json'},
                 body: JSON.stringify({userID:userID, curDate:currentDate})
