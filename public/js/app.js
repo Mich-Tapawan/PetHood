@@ -196,11 +196,11 @@ function setMapList(list, type, userID){
             e.stopPropagation(); // Prevents triggering the li click event
             let location = JSON.parse(localStorage.getItem('locationInfo'));
             if(notMarked === false || locSaved === true){
-                img.src = '../public/assets/bookmark.png';
+                img.src = 'assets/bookmark.png';
                 notMarked = true;
             }
             else{
-                img.src = '../public/assets/bookmark-fill.png';
+                img.src = 'assets/bookmark-fill.png';
                 notMarked = false;
                 }
             sendLocationData(userID, location, notMarked, type);
@@ -236,7 +236,7 @@ function createCards(location, type, forBookmark){
     h5.style.color = '#000000';
     p.style.fontSize = '1rem';
 
-    img.src = '../public/assets/bookmark.png';
+    img.src = 'assets/bookmark.png';
     img.style.position = 'absolute';
     img.style.width = '50px';
     img.style.left = '89%';
@@ -428,7 +428,7 @@ function displayFavorites(list, types){
             locName.innerHTML = clickedLocation.displayName;
             address.innerHTML = clickedLocation.address;
             map.flyTo(position, 19);
-            img.src = '../public/assets/bookmark-fill.png';
+            img.src = 'assets/bookmark-fill.png';
             isClicked = true;
             displayContainer(isClicked);
             bookmarkPosition();      
@@ -456,11 +456,11 @@ async function updateBookmarks(userID, location, img){
     try{
         let saved = await isSaved(userID, location, img);
         if( saved === true){
-            img.src = '../public/assets/bookmark-fill.png'
+            img.src = 'assets/bookmark-fill.png'
             locSaved = true;
         }
         else{
-            img.src = '../public/assets/bookmark.png';
+            img.src = 'assets/bookmark.png';
             locSaved = false;
         }
     }
@@ -481,7 +481,7 @@ async function isSaved(userID, location, img) {
 
         for(let savedLoc of result){
             if(savedLoc.shop_name === location.name){ 
-                img.src = '../public/assets/bookmark-fill.png';
+                img.src = 'assets/bookmark-fill.png';
                 return true;
             }
         }
