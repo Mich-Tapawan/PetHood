@@ -114,6 +114,28 @@ app.post('/getFavorites', (req, res)=>{
     })
 })
 
+//Error and disconnection handling
+db.on('error', (err) => {
+    console.error('Database error:', err);
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+        handleDisconnect();
+    } else {
+        throw err;
+    }
+});
+
+function handleDisconnect() {
+    db = mysql.createConnection(db.config);
+    db.connect((err) => {
+        if (err) {
+            console.error('Error when reconnecting:', err);
+            setTimeout(handleDisconnect, 2000);
+        } else {
+            console.log('Reconnected to database.');
+        }
+    });
+}
+
 app.listen('3000', ()=>{
     console.log('port running at 3000')
 })
