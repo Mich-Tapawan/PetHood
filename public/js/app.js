@@ -340,7 +340,7 @@ function bookmarkPosition(){
 
 async function sendLocationData(userID, data, notMarked, type){
     try{
-        let response = await fetch('http://localhost:3000/getUser', {
+        let response = await fetch('https://pethood.onrender.com/getUser', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({userID: userID, favorite: data, state: notMarked, type: type})
@@ -391,7 +391,7 @@ async function getFavorites(userID) {
     let types = [];
 
     try{
-        let response = await fetch('http://localhost:3000/getFavorites',{
+        let response = await fetch('https://pethood.onrender.com/getFavorites',{
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({userID:userID})
@@ -472,7 +472,7 @@ async function updateBookmarks(userID, location, img){
 //Updates bookmark card icon during search
 async function isSaved(userID, location, img) {
     try{
-        let response = await fetch('http://localhost:3000/getFavorites',{
+        let response = await fetch('https://pethood.onrender.com/getFavorites',{
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({userID:userID})
