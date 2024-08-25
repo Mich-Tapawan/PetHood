@@ -48,7 +48,7 @@
 
 .search-container{
     position: fixed;
-    margin-top: -13.8vh;
+    margin-top: -108px;
     background-color: #ffffff;
     border: none;
     box-shadow: 0px 1px 10px #aeaeae;
@@ -238,6 +238,7 @@
 
     .search-container{
         padding-inline: 15px;
+        margin-top: -130px;
     }
     
     .search-bar{
@@ -257,10 +258,6 @@
 
     .main-container{
         margin-top: 220px;
-    }
-
-    .search-container{
-        margin-top: -16vh;
     }
 
     .map-col{
@@ -286,10 +283,9 @@
         margin-top: 210px;
     }
 
-    .search-container{
-        margin-top: -15vh;
+    .card-col{
+        padding-right: 12px;
     }
-    
 
     .map-col{
         padding-left: 12px;

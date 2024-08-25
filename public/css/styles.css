@@ -619,3 +619,26 @@ footer span{
         grid-template-rows: 150px;
     }
 }
+
+@media (max-width: 480px) {
+    .carousel-caption h1{
+        font-size: 2.5rem;
+        margin-bottom: 50px;
+    }
+
+    .search-bar input{
+        width: 96%;
+    }
+
+    .product-text h2{
+        font-size: 3rem;
+    }
+    
+    .shop-btn{
+        margin-bottom: 30px;
+    }
+
+    .ftr-texts:nth-child(1){
+        padding-left: 10%;
+    }
+}
