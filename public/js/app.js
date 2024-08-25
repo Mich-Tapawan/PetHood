@@ -216,6 +216,7 @@ function setMapList(list, type, userID){
 }
 
 function createCards(location, type, forBookmark){
+    let screenWidth = window.innerWidth;
     const li = document.createElement('li');
     const h2 = document.createElement('h2');
     const h5 = document.createElement('h5');
@@ -238,7 +239,12 @@ function createCards(location, type, forBookmark){
     img.src = 'assets/bookmark.png';
     img.style.position = 'absolute';
     img.style.width = '50px';
-    img.style.left = '89%';
+    if(screenWidth < 500){
+        img.style.left = '86%';
+    }
+    else{
+        img.style.left = '89%';
+    }
     img.style.bottom = '70%';
     img.style.display = 'none';
 

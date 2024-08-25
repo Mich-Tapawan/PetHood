@@ -222,9 +222,6 @@
   100% { left: 235px; height: 30px; width: 15px}
 }
 
-@media (max-width: 1400px){
-}
-
 @media (max-width: 992px) {
 
     .navbar-toggler{
