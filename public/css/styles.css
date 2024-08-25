@@ -640,12 +640,20 @@ footer span{
     }
 
     .ftr-text-wrapper{
-        display: block;
+        display: flex;
+        justify-content: center;
+        padding-left: 0%;
         margin-block: 50px;
+        border: 1px solid blue;
     }
 
     .ftr-texts:nth-child(1){
         border: 1px solid white;
+        margin-right: 20px;
+    }
+    .ftr-texts:nth-child(2){
+        border: 1px solid white;
+        margin-right: 0px;
     }
 }
 
