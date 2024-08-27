@@ -2,9 +2,9 @@
 
 Frontend: HTML, Bootstrap 5, Javascript, LeafletJS
 
-Backend: Express JS, MySQL Database
+Backend: Express JS, MySQL
 
 Hosting Services: Vercel Client-side, Render Server-side, freesqldatabase.com
 
 Description:
-A dynamic web application that utilizes Nominatim OpenStreetMap external API to locate and bookmark pet care services all around the Philippines.
+A dynamic web application that utilizes REST API and Nominatim OpenStreetMap external API to locate and bookmark pet care services all around the Philippines.
