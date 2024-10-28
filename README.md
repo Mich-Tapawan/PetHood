@@ -1,5 +1,9 @@
-![image](https://github.com/user-attachments/assets/6afe1b86-633f-41a4-bf9e-767bb2ffddaa)# PetHood
+# PetHood
 A dynamic web application that utilizes REST API and Nominatim OpenStreetMap external API to locate and bookmark pet care services all around the Philippines.
+
+## Overview
+![Hero Section](https://github.com/user-attachments/assets/de6ca3d2-f486-482f-adf5-6a7c2e53b86b)
+
 
 **Features**
 ----
@@ -15,8 +19,11 @@ Backend: Express JS, MySQL
 
 Hosting Services: Vercel Client-side, Render Server-side
 
-**How it works**
+## How it works
 ----
+![Search Page](https://github.com/user-attachments/assets/a8023c75-6a71-4d8d-bdce-17e3414fe04f)
+
+
 It is an application that takes the location (e.g., City, Province, Region) entered by the user and queries it to the Nominatim API. This API then sends back a JSON file containing a list of objects representing the pet shops, pet schools, grooming services, and veterinary clinics in the Philippines, specifically in the scope of the searched area. Each object includes the establishment's name, address, and longitude and latitude coordinates. In the front end, the objects are displayed as cards that can be clicked to view their map location through LeafletJS and Open Street Map API. Pointers are also placed on the map for every object's coordinates, showing all the resulting locations in a nationwide view. If a card is clicked, its corresponding longitude and latitude values are used by the LeafletJS library to direct and zoom the map view to where the establishment is located.
 
 This application integrates a bookmarking feature by using an SQL database system to store data and a REST API that recognizes each device as a user through generating a unique ID and saving it in the browser's local storage. Upon opening the search page, a request is fetched to the REST API which then checks if the user ID in your local storage matches with any of the existing user IDs in the database. Resulting in none will create a new record with your unique ID in the user table while resulting in a match will just update your 'latest logged-in date' attribute. This ensures that if a user becomes inactive for a certain amount of time, that record will be deleted automatically to avoid insufficient memory storage due to the usage of a limited and free database service.
