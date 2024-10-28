@@ -2,7 +2,7 @@
 A dynamic web application that utilizes REST API and Nominatim OpenStreetMap external API to locate and bookmark pet care services all around the Philippines.
 
 ## Overview
-![Hero Section](https://github.com/user-attachments/assets/de6ca3d2-f486-482f-adf5-6a7c2e53b86b)
+![Home Page](https://github.com/user-attachments/assets/3268edeb-8ac4-40e7-9a5d-f70915ee1407)
 
 
 **Features**
@@ -20,8 +20,7 @@ Backend: Express JS, MySQL
 Hosting Services: Vercel Client-side, Render Server-side
 
 ## How it works
-----
-![Search Page](https://github.com/user-attachments/assets/a8023c75-6a71-4d8d-bdce-17e3414fe04f)
+![Search Page](https://github.com/user-attachments/assets/7491c161-443d-42b9-ab38-a709e3768a8e)
 
 
 It is an application that takes the location (e.g., City, Province, Region) entered by the user and queries it to the Nominatim API. This API then sends back a JSON file containing a list of objects representing the pet shops, pet schools, grooming services, and veterinary clinics in the Philippines, specifically in the scope of the searched area. Each object includes the establishment's name, address, and longitude and latitude coordinates. In the front end, the objects are displayed as cards that can be clicked to view their map location through LeafletJS and Open Street Map API. Pointers are also placed on the map for every object's coordinates, showing all the resulting locations in a nationwide view. If a card is clicked, its corresponding longitude and latitude values are used by the LeafletJS library to direct and zoom the map view to where the establishment is located.
