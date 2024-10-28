@@ -10,7 +10,9 @@ A dynamic web application that utilizes REST API and Nominatim OpenStreetMap ext
 **Tech Stack**
 ----
 Frontend: HTML, Bootstrap 5, Javascript, LeafletJS
+
 Backend: Express JS, MySQL
+
 Hosting Services: Vercel Client-side, Render Server-side
 
 **How it works**
