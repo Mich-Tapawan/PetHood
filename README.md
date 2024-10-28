@@ -14,4 +14,5 @@ Backend: Express JS, MySQL
 Hosting Services: Vercel Client-side, Render Server-side
 
 **How it works**
+----
 It is a
