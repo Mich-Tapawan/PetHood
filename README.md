@@ -1,5 +1,11 @@
 # PetHood
 
+**Features**
+----
+- Search pet service locations
+- Bookmark locations
+- Mobile Responsive
+
 Frontend: HTML, Bootstrap 5, Javascript, LeafletJS
 
 Backend: Express JS, MySQL
