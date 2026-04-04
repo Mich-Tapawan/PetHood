@@ -1,498 +1,451 @@
-const searchInput = document.getElementById('search');
-const searchBtn = document.getElementById('search-btn');
-const resultList = document.getElementById('result-list');
-const mapContainer = document.getElementById('map');
+const searchInput = document.getElementById("search");
+const searchBtn = document.getElementById("search-btn");
+const resultList = document.getElementById("result-list");
+const favList = document.getElementById("fav-list");
+const resultsLoading = document.getElementById("results-loading");
+const resultsHeader = document.getElementById("results-header");
+const searchIndicator = document.getElementById("search-indicator");
+const searchNone = document.getElementById("search-none");
+const favBtn = document.getElementById("favorites");
+const favContainer = document.getElementById("favorites-container");
+const returnBtn = document.getElementById("return-btn");
+const resultsPanel = document.querySelector(".results-panel");
+const mapPanel = document.querySelector(".map-panel");
+const locName = document.getElementById("loc-name");
+const locAdd = document.getElementById("loc-add");
+const mapDetail = document.getElementById("map-detail");
+const mapWrap = document.getElementById("map-wrap");
+
 const currentMarkers = [];
+let isClicked = false; // true when a card has been tapped (mobile)
+let favOpen = false; // true when favorites panel is open
+let locSaved = false; // true when current card is already bookmarked
+let emptyCount = 0; // counts empty sub-queries in fetchAll
 
-const resultText = document.querySelector('.card-col p');
-const searchIndicator = document.getElementById('search-indicator');
-const locName = document.getElementById('loc-name');
-const address = document.getElementById('loc-add');
-const searchNone = document.getElementById('search-none');
-const searchNoneText = document.querySelector('#search-none h2');
-const cardCol = document.querySelector('.card-col');
-const mapCol = document.querySelector('.map-container');
-const returnBtn = document.querySelector('#return-btn');
-const loader = document.querySelector('.loader-container');
-const favBtn = document.querySelector('#favorites');
-const favContainer = document.querySelector('.favorites-container');
-const favList = document.querySelector('#fav-list');
-let screenWidth = window.innerWidth;
-let isClicked = false;
-let favClicked = true;
-let locSaved = false;
-
-// Initialize map
-var map = L.map('map').setView([12.8797, 121.7740], 5);
+/* ════════════════════════════════════════════
+   MAP INIT
+   ════════════════════════════════════════════ */
+const map = L.map("map").setView([12.8797, 121.774], 5);
 map.setMinZoom(5);
 map.dragging.disable();
-    
-// Use open street map layer
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 19,
+  attribution:
+    '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 }).addTo(map);
 
-//Initialize customized marker design
-var pawIcon = L.icon({
-    iconUrl: 'assets/redPaw.png',
-    iconSize:     [36, 48],
-    popupAnchor:  [-3, -76]
+const pawIcon = L.icon({
+  iconUrl: "assets/redPaw.png",
+  iconSize: [36, 48],
+  popupAnchor: [-3, -76],
 });
 
-if(screenWidth < 768){
-    mapCol.style.display = 'none';
+function isMobile() {
+  return window.innerWidth < 768;
 }
 
-//Activate search from index or main page
-if(localStorage.getItem('heroSearch')){
-    searchInput.value = localStorage.getItem('heroSearch');
-    fetchAll(searchInput)
-    localStorage.removeItem('heroSearch');
+/** Show the results panel, hide map (mobile only after a card click) */
+function showResults() {
+  if (!isMobile()) return;
+  resultsPanel.classList.remove("mobile-hidden");
+  mapPanel.classList.add("mobile-hidden");
+  returnBtn.style.display = "none";
 }
 
-// Enter inquiry to search
-searchInput.addEventListener('keydown', (event)=>{
-    if(event.key === 'Enter'){
-        searchBtn.click();
-    }
-})
-
-searchBtn.addEventListener('click', ()=>{
-    if(!searchInput.value){
-        return
-    }
-    else{
-        favContainer.style.display = 'none';
-        favBtn.style.color = 'white';
-        favBtn.style.background = '#904646';
-        favBtn.style.border = 'none';
-        favClicked = true;
-         //Resets the result list and the map markers
-        while (resultList.firstChild) {
-            resultList.removeChild(resultList.firstChild);
-            }
-        for(const marker of currentMarkers){
-            map.removeLayer(marker);
-        }
-        map.flyTo([12.8797, 121.7740], 5);
-        fetchAll(searchInput)
-
-        screenWidth = window.innerWidth;
-        if(screenWidth <= 758){
-            mapCol.style.display = 'none';
-            cardCol.style.display = 'block';
-        }
-    }
-})
-
-let emptyCounter = 0;
-function fetchAll(searchInput){
-    let queries = ['Pet shop, ', 'Grooming, ', 'Pet School', 'Veterinary clinic, '];
-
-    for(query of queries){
-        let entry = query + searchInput.value + ' , Philippines';
-        fetchLocations(entry);
-    }
+/** Show the map panel, hide results (mobile only, after card click) */
+function showMap() {
+  if (!isMobile()) return;
+  resultsPanel.classList.add("mobile-hidden");
+  mapPanel.classList.remove("mobile-hidden");
+  returnBtn.style.display = "flex";
 }
 
-// filtering types
-const types = document.querySelectorAll('.dropdown-item');
-types.forEach( btn =>{
-    btn.addEventListener('click', ()=>{
-
-        //Resets the result list and the map markers
-        while (resultList.firstChild) {
-            resultList.removeChild(resultList.firstChild);
-            }
-        
-        for(const marker of currentMarkers){
-            map.removeLayer(marker);
-        }
-
-        if(btn.dataset.type != "All"){
-            let value = btn.dataset.type + ', ';
-            let query = value + searchInput.value + ' , Philippines'
-            fetchLocations(query);
-        }
-        else{
-            fetchAll(searchInput);
-        }
-        screenWidth = window.innerWidth;
-        if(screenWidth <= 758){
-            mapCol.style.display = 'none';
-            cardCol.style.display = 'block';
-        }
-        map.flyTo([12.8797, 121.7740], 5);
-    })
-})
-
-// fetch data of location from users 
-async function fetchLocations(query){
-    loader.classList.replace('d-none', 'd-flex');
-    searchNone.classList.replace('d-flex', 'd-none');
-    resultText.style.display = 'none';
-
-    try{
-        let commaIndex = query.indexOf(',');
-        let selectedType = query.slice(0, commaIndex);
-
-        let result = await fetch(`https://nominatim.openstreetmap.org/search?format=json&polygon=1&addressdetails=1&q=${query}`);
-        let parsedResult = await result.json();
-        if(parsedResult.length === 0){
-            //Displays search-empty for empty result
-            emptyCounter++;
-            if(emptyCounter == 4){
-                searchNone.classList.replace('d-none', 'd-flex');
-                searchNoneText.innerHTML = 'THERE IS NO SUCH PLACE OR RESULT';
-                resultList.style.display = 'none';
-                resultText.style.display = 'none';
-                emptyCounter = 0;
-            }
-            return
-        }
-        else{
-            let userID = localStorage.getItem('userID');
-            setMapList(parsedResult, selectedType, userID);
-        }
-        
+/** Called on resize — restore desktop layout */
+window.addEventListener(
+  "resize",
+  () => {
+    resultsPanel.classList.remove("mobile-hidden");
+    mapPanel.classList.remove("mobile-hidden");
+    if (!isMobile()) {
+      returnBtn.style.display = "none";
     }
-    catch(error){
-        console.error(error);
-    }
-    finally{
-        loader.classList.replace('d-flex', 'd-none');
-    }
+  },
+  { passive: true },
+);
+
+/* ════════════════════════════════════════════
+   LOADING STATE
+   ════════════════════════════════════════════ */
+function showLoading() {
+  resultsLoading.classList.remove("d-none");
+  resultsLoading.classList.add("d-flex");
+  searchNone.style.display = "none";
+  resultsHeader.style.display = "none";
 }
 
-function setMapList(list, type, userID){
-    resultList.style.display = 'flex';
-
-    for(const location of list){
-        let {li, img, span} = createCards(location, type, false);
-        let notMarked = true;
-
-        // Set currently viewed location 
-        li.addEventListener('click', ()=>{
-            cardClicked(resultList, li, img);
-            const clickedLocation = JSON.parse(span.innerHTML);
-            localStorage.setItem('locationInfo', JSON.stringify(clickedLocation));
-            const position = new L.LatLng(clickedLocation.lat, clickedLocation.lon);
-            locName.style.display = 'block';
-            address.style.display = 'block';
-            locName.innerHTML = clickedLocation.displayName;
-            address.innerHTML = clickedLocation.address;
-            map.flyTo(position, 19);
-
-            isClicked = true;
-            displayContainer(isClicked);
-            bookmarkPosition();
-            updateBookmarks(userID, location, img)      
-        });
-
-        // Bookmark icon toggling and sending JSON data to server
-        img.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevents triggering the li click event
-            let location = JSON.parse(localStorage.getItem('locationInfo'));
-            if(notMarked === false || locSaved === true){
-                img.src = 'assets/bookmark.png';
-                notMarked = true;
-            }
-            else{
-                img.src = 'assets/bookmark-fill.png';
-                notMarked = false;
-                }
-            sendLocationData(userID, location, notMarked, type);
-        });
-
-        const position = new L.LatLng(location.lat, location.lon);
-        currentMarkers.push(new L.marker(position, {icon: pawIcon}).addTo(map));
-        resultList.appendChild(li);
-        resultText.style.display = 'block';
-        searchIndicator.innerHTML = searchInput.value;
-        searchNone.classList.replace('d-flex', 'd-none');
-        map.dragging.enable();
-    }
+function hideLoading() {
+  resultsLoading.classList.add("d-none");
+  resultsLoading.classList.remove("d-flex");
 }
 
-function createCards(location, type, forBookmark){
-    let screenWidth = window.innerWidth;
-    const li = document.createElement('li');
-    const h2 = document.createElement('h2');
-    const h5 = document.createElement('h5');
-    const p = document.createElement('p');
-    const span = document.createElement('span');
-    const img = document.createElement('img');
-
-    li.classList.add('list-group-item', 'list-group-item-action');
-    li.style.minHeight = '150px';
-    li.style.padding = '20px';
-    li.style.marginBottom = '20px';
-    li.style.cursor = 'pointer';
-
-    h2.style.color = '#904646';
-    h2.style.marginBottom = '20px';
-    h2.style.width = '90%';
-    h5.style.color = '#000000';
-    p.style.fontSize = '1rem';
-
-    img.src = 'assets/bookmark.png';
-    img.style.position = 'absolute';
-    img.style.width = '50px';
-    if(screenWidth < 500){
-        img.style.left = '86%';
-    }
-    else{
-        img.style.left = '89%';
-    }
-    img.style.bottom = '70%';
-    img.style.display = 'none';
-
-    if(forBookmark){
-        span.innerHTML = JSON.stringify({
-            displayName: location.shop_name,
-            address: location.address,
-            lat: location.lat,
-            lon: location.lon
-        }, undefined, 2);
-    }
-    else{
-        span.innerHTML = JSON.stringify({
-            displayName: location.name,
-            address: location.display_name,
-            lat: location.lat,
-            lon: location.lon
-        }, undefined, 2);
-    }
-
-    li.appendChild(h2);
-    li.appendChild(img);
-    li.appendChild(h5);
-    li.appendChild(p);
-    li.appendChild(span);
-
-    const info = JSON.parse(span.innerHTML);
-    h2.textContent = info.displayName;
-    h5.textContent = 'Type: '+ type;
-    p.textContent = info.address;
-    span.style.display = 'none';
-
-    return {li, img, span}
-};
-
-function cardClicked(list, li, img){
-    // Set styling on clicked location card
-    for(const child of list.children) {
-        child.querySelector('h2').style.color = '#904646';
-        child.querySelector('p').style.color = '#000000';
-        child.querySelector('h5').style.color = '#000000';
-        child.querySelector('img').style.display = 'none';
-        child.style.background = '#ffffff';
-    }
-    li.querySelector('h2').style.color = '#ffffff';
-    li.querySelector('h5').style.color = '#ffffff';
-    li.querySelector('p').style.color = '#ffffff';
-    li.style.background = '#904646';
-    img.style.display = 'block';
-                
-    // Prevents off-window text content inside the map container
-    if(mapCol.offsetHeight > 600){
-        locName.style.fontSize = '1.8rem';
-        address.style.fontSize = '1.1rem';
-    }
-    else{
-        locName.style.fontSize = '2rem';
-        address.style.fontSize = '1.3rem';
-    }
-};
-
-returnBtn.addEventListener('click', ()=>{
-    mapCol.style.display = 'none';
-    cardCol.style.display = 'block';
-})
-
-window.addEventListener('resize', ()=>{
-    displayContainer(isClicked);  
-})
-
-function displayContainer(isClicked){
-    screenWidth = window.innerWidth;
-    if(screenWidth < 768){
-        if(isClicked){
-            cardCol.style.display = 'none';
-            mapCol.style.display = 'block';
-            mapCol.style.width = '95%';
-            returnBtn.style.display = 'block';
-        }
-        else{
-            mapCol.style.display = 'none';
-        }
-    }
-    else{
-        cardCol.style.display = 'block';
-        mapCol.style.display = 'block';
-        mapCol.style.width = '41%';
-        returnBtn.style.display = 'none';
-    }
+/* ════════════════════════════════════════════
+   SEARCH — hero passthrough
+   ════════════════════════════════════════════ */
+const savedSearch = sessionStorage.getItem("heroSearch");
+if (savedSearch && searchInput) {
+  searchInput.value = savedSearch;
+  sessionStorage.removeItem("heroSearch");
+  triggerSearch();
 }
 
-function bookmarkPosition(){
-    let screenWidth = window.innerWidth;
-    if(screenWidth < 992){
-        img.style.left = '88%';
-    }
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") searchBtn.click();
+});
+
+searchBtn.addEventListener("click", triggerSearch);
+
+function triggerSearch() {
+  if (!searchInput.value.trim()) return;
+
+  // Reset favorites UI
+  closeFavorites();
+
+  // Clear results + markers
+  clearResults();
+  resetMap();
+
+  fetchAll(searchInput.value.trim());
+
+  if (isMobile()) showResults();
 }
 
-async function sendLocationData(userID, data, notMarked, type){
-    try{
-        let response = await fetch('https://pethood.onrender.com/getUser', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({userID: userID, favorite: data, state: notMarked, type: type})
-        })
-        let result = await response.json();
-    }
-    catch(error){
-        console.error(error);
-    }
+/* ════════════════════════════════════════════
+   FETCH
+   ════════════════════════════════════════════ */
+function fetchAll(location) {
+  emptyCount = 0;
+  const queries = [
+    `Pet shop, ${location}, Philippines`,
+    `Grooming, ${location}, Philippines`,
+    `Pet School, ${location}, Philippines`,
+    `Veterinary clinic, ${location}, Philippines`,
+  ];
+  queries.forEach((q) => fetchLocations(q));
 }
 
-// Favorites Section
+async function fetchLocations(query) {
+  showLoading();
 
-favBtn.addEventListener('click', ()=>{
-    let userID = localStorage.getItem('userID');
+  try {
+    const commaIdx = query.indexOf(",");
+    const selectedType = query.slice(0, commaIdx).trim();
 
-    //Resets the result list and the map markers
-    while (favList.firstChild) {
-        favList.removeChild(favList.firstChild);
-        }
-            
-    for(const marker of currentMarkers){
-        map.removeLayer(marker);
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&polygon=1&addressdetails=1&q=${encodeURIComponent(query)}`,
+    );
+    const places = await res.json();
+
+    if (places.length === 0) {
+      emptyCount++;
+      if (emptyCount === 4) {
+        // All 4 sub-queries returned nothing
+        showEmptyState("No results found for that location.");
+        emptyCount = 0;
+      }
+      return;
     }
-    if(favClicked === true){
-        favContainer.style.display = 'block';
-        favBtn.style.color = '#904646';
-        favBtn.style.background = '#FFD18D';
-        favBtn.style.border = '1px solid #904646';
-        getFavorites(userID)
+
+    const userID = localStorage.getItem("userID");
+    renderCards(places, selectedType, userID);
+  } catch (err) {
+    console.error("fetchLocations error:", err);
+  } finally {
+    hideLoading();
+  }
+}
+
+/* ════════════════════════════════════════════
+   RENDER CARDS
+   ════════════════════════════════════════════ */
+function renderCards(places, type, userID) {
+  resultsHeader.style.display = "block";
+  searchIndicator.textContent = searchInput.value;
+  searchNone.style.display = "none";
+
+  places.forEach((place) => {
+    const { li, bookmarkBtn, dataSpan } = createCard(place, type, false);
+
+    li.addEventListener("click", () => {
+      onCardClick(resultList, li, bookmarkBtn);
+      const loc = JSON.parse(dataSpan.textContent);
+      localStorage.setItem("locationInfo", JSON.stringify(loc));
+      showLocationDetail(loc);
+      isClicked = true;
+      if (isMobile()) showMap();
+      updateBookmarkIcon(userID, place, bookmarkBtn);
+    });
+
+    bookmarkBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const loc = JSON.parse(localStorage.getItem("locationInfo"));
+      const saving = bookmarkBtn.dataset.saved !== "true";
+      bookmarkBtn.dataset.saved = saving ? "true" : "false";
+      bookmarkBtn.classList.toggle("saved", saving);
+      sendLocationData(userID, loc, !saving, type);
+    });
+
+    const pos = new L.LatLng(place.lat, place.lon);
+    currentMarkers.push(L.marker(pos, { icon: pawIcon }).addTo(map));
+    resultList.appendChild(li);
+    map.dragging.enable();
+  });
+}
+
+/* ════════════════════════════════════════════
+   CREATE CARD ELEMENT
+   ════════════════════════════════════════════ */
+function createCard(location, type, isBookmark) {
+  const li = document.createElement("li");
+  const nameEl = document.createElement("h3");
+  const typeEl = document.createElement("span");
+  const addressEl = document.createElement("p");
+  const bookmarkBtn = document.createElement("button");
+  const dataSpan = document.createElement("span"); // hidden data store
+
+  li.className = "result-card";
+  nameEl.className = "result-name";
+  typeEl.className = "result-type";
+  addressEl.className = "result-address";
+  bookmarkBtn.className = "bookmark-btn";
+  bookmarkBtn.setAttribute("aria-label", "Bookmark this location");
+  dataSpan.hidden = true;
+
+  // Bookmark SVG (outline = unsaved, filled = saved)
+  bookmarkBtn.innerHTML = `
+    <svg class="bm-outline" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    <svg class="bm-filled"  width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+  `;
+
+  // Populate data span
+  if (isBookmark) {
+    dataSpan.textContent = JSON.stringify({
+      displayName: location.shop_name,
+      address: location.address,
+      lat: location.lat,
+      lon: location.lon,
+    });
+  } else {
+    dataSpan.textContent = JSON.stringify({
+      displayName: location.name,
+      address: location.display_name,
+      lat: location.lat,
+      lon: location.lon,
+    });
+  }
+
+  const info = JSON.parse(dataSpan.textContent);
+  nameEl.textContent = info.displayName;
+  typeEl.textContent = type;
+  addressEl.textContent = info.address;
+
+  li.append(nameEl, typeEl, addressEl, bookmarkBtn, dataSpan);
+  return { li, bookmarkBtn, dataSpan };
+}
+
+/* ════════════════════════════════════════════
+   CARD ACTIVE STATE
+   ════════════════════════════════════════════ */
+function onCardClick(list, activeLi, bookmarkBtn) {
+  list.querySelectorAll(".result-card").forEach((card) => {
+    card.classList.remove("active");
+    card.querySelector(".bookmark-btn").classList.remove("visible");
+  });
+  activeLi.classList.add("active");
+  bookmarkBtn.classList.add("visible");
+}
+
+/* ════════════════════════════════════════════
+   LOCATION DETAIL (map panel)
+   ════════════════════════════════════════════ */
+function showLocationDetail(loc) {
+  locName.textContent = loc.displayName;
+  locAdd.textContent = loc.address;
+  mapDetail.style.display = "block";
+  map.flyTo([loc.lat, loc.lon], 19);
+}
+
+/* ════════════════════════════════════════════
+   RETURN BUTTON (mobile)
+   ════════════════════════════════════════════ */
+returnBtn.addEventListener("click", () => {
+  isClicked = false;
+  showResults();
+});
+
+/* ════════════════════════════════════════════
+   EMPTY / RESET HELPERS
+   ════════════════════════════════════════════ */
+function showEmptyState(message) {
+  searchNone.querySelector("h3").textContent = "Where to, furparent?";
+  searchNone.querySelector("p").textContent =
+    message ||
+    "Enter a city, province, or region to discover pet-friendly spots near you.";
+  searchNone.style.display = "flex";
+  resultsHeader.style.display = "none";
+}
+
+function clearResults() {
+  resultList.innerHTML = "";
+  favList.innerHTML = "";
+}
+
+function resetMap() {
+  currentMarkers.forEach((m) => map.removeLayer(m));
+  currentMarkers.length = 0;
+  map.flyTo([12.8797, 121.774], 5);
+  mapDetail.style.display = "none";
+}
+
+/* ════════════════════════════════════════════
+   FILTER DROPDOWN
+   ════════════════════════════════════════════ */
+document.querySelectorAll(".dropdown-item[data-type]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (!searchInput.value.trim()) return;
+
+    clearResults();
+    resetMap();
+
+    if (btn.dataset.type === "All") {
+      fetchAll(searchInput.value.trim());
+    } else {
+      fetchLocations(
+        `${btn.dataset.type}, ${searchInput.value.trim()}, Philippines`,
+      );
     }
-    else{
-        favContainer.style.display = 'none';
-        favBtn.style.color = 'white';
-        favBtn.style.background = '#904646';
-        favBtn.style.border = 'none';
-        searchNone.classList.replace('d-none','d-flex');
-    }
-    resultList.style.display = 'none';
-    resultText.style.display = 'none';
-    searchIndicator.style.display = 'none';
-    favClicked = !favClicked;
-})
+
+    if (isMobile()) showResults();
+  });
+});
+
+/* ════════════════════════════════════════════
+   FAVORITES
+   ════════════════════════════════════════════ */
+favBtn.addEventListener("click", () => {
+  if (favOpen) {
+    closeFavorites();
+  } else {
+    openFavorites();
+  }
+});
+
+function openFavorites() {
+  favOpen = true;
+  favBtn.classList.add("active");
+  favContainer.style.display = "block";
+  resultList.style.display = "none";
+  resultsHeader.style.display = "none";
+  searchNone.style.display = "none";
+
+  clearResults();
+  resetMap();
+
+  const userID = localStorage.getItem("userID");
+  getFavorites(userID);
+}
+
+function closeFavorites() {
+  favOpen = false;
+  favBtn.classList.remove("active");
+  favContainer.style.display = "none";
+  resultList.style.display = "";
+  showEmptyState();
+}
 
 async function getFavorites(userID) {
-    loader.classList.replace('d-none', 'd-flex');
-    searchNone.classList.replace('d-flex', 'd-none');
-    let types = [];
-
-    try{
-        let response = await fetch('https://pethood.onrender.com/getFavorites',{
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({userID:userID})
-        });
-        let result = await response.json();
-        for(let record of result){
-            types.push(record.type);
-        }
-        displayFavorites(result, types)
-    }
-    catch(error){
-        console.error(error);
-    }
-    finally{
-        loader.classList.replace('d-flex', 'd-none');
-    }
+  showLoading();
+  try {
+    const res = await fetch("https://pethood.onrender.com/getFavorites", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userID }),
+    });
+    const result = await res.json();
+    const types = result.map((r) => r.type);
+    displayFavorites(result, types);
+  } catch (err) {
+    console.error("getFavorites error:", err);
+  } finally {
+    hideLoading();
+  }
 }
 
-function displayFavorites(list, types){
-    favList.style.display = 'flex';
-    let typeCounter = 0;
+function displayFavorites(list, types) {
+  if (list.length === 0) {
+    favContainer.style.display = "none";
+    showEmptyState("You haven't saved any favorites yet.");
+    return;
+  }
 
-    for(const location of list){
-        let {li, img, span} = createCards(location, types[typeCounter], true);
+  list.forEach((location, i) => {
+    const { li, bookmarkBtn, dataSpan } = createCard(location, types[i], true);
+    bookmarkBtn.dataset.saved = "true";
+    bookmarkBtn.classList.add("saved", "visible");
 
-        // Set currently viewed location 
-        li.addEventListener('click', ()=>{
-            cardClicked(favList, li, img);
-            const clickedLocation = JSON.parse(span.innerHTML);
-            localStorage.setItem('locationInfo', JSON.stringify(clickedLocation));
-            const position = new L.LatLng(clickedLocation.lat, clickedLocation.lon);
-            locName.style.display = 'block';
-            address.style.display = 'block';
-            locName.innerHTML = clickedLocation.displayName;
-            address.innerHTML = clickedLocation.address;
-            map.flyTo(position, 19);
-            img.src = 'assets/bookmark-fill.png';
-            isClicked = true;
-            displayContainer(isClicked);
-            bookmarkPosition();      
-        });
+    li.addEventListener("click", () => {
+      onCardClick(favList, li, bookmarkBtn);
+      const loc = JSON.parse(dataSpan.textContent);
+      localStorage.setItem("locationInfo", JSON.stringify(loc));
+      showLocationDetail(loc);
+      isClicked = true;
+      if (isMobile()) showMap();
+    });
 
-        // Bookmark icon toggling and sending JSON data to server
-        img.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevents triggering the li click event
-            let location = JSON.parse(localStorage.getItem('locationInfo'));
-            let userID = localStorage.getItem('userID');
-            sendLocationData(userID, location, true, types[typeCounter]);
-            favList.removeChild(li);
-        });
+    // Clicking bookmark on a favorite removes it
+    bookmarkBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const loc = JSON.parse(localStorage.getItem("locationInfo"));
+      const userID = localStorage.getItem("userID");
+      sendLocationData(userID, loc, true, types[i]); // state=true means "remove"
+      favList.removeChild(li);
+    });
 
-        const position = new L.LatLng(location.lat, location.lon);
-        currentMarkers.push(new L.marker(position, {icon: pawIcon}).addTo(map));
-        favList.appendChild(li);
-        searchNone.classList.replace('d-flex', 'd-none');
-        map.dragging.enable();
-        typeCounter++;
-    }
+    const pos = new L.LatLng(location.lat, location.lon);
+    currentMarkers.push(L.marker(pos, { icon: pawIcon }).addTo(map));
+    favList.appendChild(li);
+    map.dragging.enable();
+  });
 }
 
-async function updateBookmarks(userID, location, img){
-    try{
-        let saved = await isSaved(userID, location, img);
-        if( saved === true){
-            img.src = 'assets/bookmark-fill.png'
-            locSaved = true;
-        }
-        else{
-            img.src = 'assets/bookmark.png';
-            locSaved = false;
-        }
-    }
-    catch(error){
-        console.error(error)
-    }
-} 
+/* ════════════════════════════════════════════
+   BOOKMARK API
+   ════════════════════════════════════════════ */
+async function sendLocationData(userID, data, notMarked, type) {
+  try {
+    await fetch("https://pethood.onrender.com/getUser", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userID, favorite: data, state: notMarked, type }),
+    });
+  } catch (err) {
+    console.error("sendLocationData error:", err);
+  }
+}
 
-//Updates bookmark card icon during search
-async function isSaved(userID, location, img) {
-    try{
-        let response = await fetch('https://pethood.onrender.com/getFavorites',{
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({userID:userID})
-        });
-        let result = await response.json();
-
-        for(let savedLoc of result){
-            if(savedLoc.shop_name === location.name){ 
-                img.src = 'assets/bookmark-fill.png';
-                return true;
-            }
-        }
-        return false;
-    }
-    catch(error){
-        console.error(error);
-    }
+async function updateBookmarkIcon(userID, place, bookmarkBtn) {
+  try {
+    const res = await fetch("https://pethood.onrender.com/getFavorites", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userID }),
+    });
+    const result = await res.json();
+    const saved = result.some((loc) => loc.shop_name === place.name);
+    bookmarkBtn.dataset.saved = saved ? "true" : "false";
+    bookmarkBtn.classList.toggle("saved", saved);
+    locSaved = saved;
+  } catch (err) {
+    console.error("updateBookmarkIcon error:", err);
+  }
 }

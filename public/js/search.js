@@ -1,63 +1,105 @@
-document.addEventListener('DOMContentLoaded', ()=>{
-    let screenWidth = window.innerWidth; 
-    let searchContainer = document.getElementById('search-container');
-    let burgerIcon = document.querySelector('.navbar-toggler-icon');
-    let navList = document.querySelector('#navbarNav');
-    let location = document.querySelector('#search');
-    placeholderChanger();
-    let user = checkUser();
-    let current_date =  Date.now();
-    console.log(user, current_date)
-    identifyUser(user, current_date);
+document.addEventListener("DOMContentLoaded", () => {
+  /* ── Navbar scroll effect ── */
+  const navbar = document.getElementById("navbar");
+  window.addEventListener(
+    "scroll",
+    () => {
+      navbar?.classList.toggle("scrolled", window.scrollY > 40);
+    },
+    { passive: true },
+  );
 
+  /* ── Mobile nav: keep search strip below collapsed nav ── */
+  const burgerIcon = document.querySelector(".navbar-toggler");
+  const searchStrip = document.getElementById("search-container");
 
-    window.addEventListener('resize', ()=>{
-        placeholderChanger();
+  burgerIcon?.addEventListener("click", () => {
+    // Let Bootstrap animate first, then adjust z-index
+    setTimeout(() => {
+      const navOpen = document.querySelector("#navbarNav.show");
+      if (searchStrip) {
+        searchStrip.style.zIndex = navOpen ? "1010" : "1020";
+      }
+    }, 50);
+  });
+
+  /* ── Responsive placeholder ── */
+  const searchInput = document.getElementById("search");
+
+  function updatePlaceholder() {
+    if (!searchInput) return;
+    searchInput.placeholder =
+      window.innerWidth < 640
+        ? "Enter a location…"
+        : "Enter a location (e.g. City, Province, Region)";
+  }
+
+  updatePlaceholder();
+  window.addEventListener("resize", updatePlaceholder, { passive: true });
+
+  /* ── Restore search from hero ── */
+  const savedSearch = sessionStorage.getItem("heroSearch");
+  if (savedSearch && searchInput) {
+    searchInput.value = savedSearch;
+    sessionStorage.removeItem("heroSearch");
+    // Trigger search automatically
+    document.getElementById("search-btn")?.click();
+  }
+
+  /* ── Filter label update ── */
+  const filterLabel = document.getElementById("filter-label");
+  const dropdownItems = document.querySelectorAll(".dropdown-item[data-type]");
+
+  dropdownItems.forEach((item) => {
+    item.addEventListener("click", () => {
+      if (filterLabel) {
+        filterLabel.textContent =
+          item.textContent.trim() === "All"
+            ? "All Types"
+            : item.textContent.trim();
+      }
     });
+  });
 
-    // Search Placeholder Changer
-    function placeholderChanger(){
-        screenWidth = window.innerWidth;
-        if(screenWidth < 768){
-            location.placeholder = 'Enter a location...';
-        }
-        else{
-            location.placeholder ='Enter a location (e.g. City, Province, Region)';
-        }
+  /* ══════════════════════════════════════════
+     USER IDENTIFICATION
+     Moved to a self-contained function.
+     Uses sessionStorage so the API isn't hit
+     on every tab refresh.
+     ══════════════════════════════════════════ */
+  function getOrCreateUserID() {
+    let id = localStorage.getItem("userID");
+    if (!id) {
+      id = String(Date.now());
+      localStorage.setItem("userID", id);
     }
+    return id;
+  }
 
-    burgerIcon.addEventListener('click', ()=>{
-        searchContainer.style.zIndex = '1000';
-        navList.style.zIndex = '2000';
-    })
+  async function identifyUser() {
+    // Only identify once per session to avoid hammering the endpoint
+    if (sessionStorage.getItem("userIdentified")) return;
 
-    function generateUser(){
-        return Date.now();
+    const userID = getOrCreateUserID();
+
+    try {
+      const response = await fetch(
+        "https://pethood.onrender.com/identifyUser",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userID, curDate: Date.now() }),
+        },
+      );
+
+      if (response.ok) {
+        sessionStorage.setItem("userIdentified", "1");
+      }
+    } catch (err) {
+      // Non-critical — silently fail
+      console.warn("User identification failed:", err.message);
     }
+  }
 
-    function checkUser(){
-        let userID = localStorage.getItem('userID');
-
-        if(!userID){
-            let id = generateUser();
-            userID = localStorage.setItem('userID', id);
-        }
-
-        return userID;
-    }
-
-    async function identifyUser(userID, currentDate){
-        try{
-            let response = await fetch('https://pethood.onrender.com/identifyUser', {
-                method:'POST',
-                headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({userID:userID, curDate:currentDate})
-            });
-            let result = await response.json();
-            console.log(result);
-        }
-        catch(err){
-            console.error(err);
-        }
-    }
+  identifyUser();
 });
