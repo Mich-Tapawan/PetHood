@@ -34,20 +34,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const alreadySeen = sessionStorage.getItem("loaderSeen");
 
-  if (alreadySeen) {
-    // Skip loader immediately
+  let pageShown = false;
+  const revealPage = () => {
+    if (pageShown) return;
+    pageShown = true;
+    if (maxWaitId !== null) clearTimeout(maxWaitId);
     showPage();
+  };
+
+  /** Images that block the loader: eager/default only. Lazy images are off-screen and may never fire load until scroll — waiting on them stuck the loader forever. */
+  function blockingImages() {
+    return [...mainEl.querySelectorAll("img")].filter(
+      (img) => img.getAttribute("loading") !== "lazy",
+    );
+  }
+
+  function blockingImagesReady() {
+    const imgs = blockingImages();
+    if (imgs.length === 0) return true;
+    return imgs.every((img) => {
+      if (!img.complete) return false;
+      // Broken / missing file: complete but no pixels — don't block forever
+      if (img.naturalWidth === 0 && img.naturalHeight === 0) return true;
+      return img.naturalWidth > 0;
+    });
+  }
+
+  let maxWaitId = null;
+
+  if (alreadySeen) {
+    revealPage();
   } else {
-    // Wait for all images in main to load
-    function allImagesLoaded() {
-      const images = mainEl.querySelectorAll("img");
-      return [...images].every((img) => img.complete && img.naturalWidth > 0);
-    }
+    maxWaitId = setTimeout(() => revealPage(), 4000);
 
     function waitForImages() {
-      if (allImagesLoaded()) {
-        showPage();
-      } else {
+      if (blockingImagesReady()) {
+        revealPage();
+      } else if (!pageShown) {
         setTimeout(waitForImages, 200);
       }
     }
