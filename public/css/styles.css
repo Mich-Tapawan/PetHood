@@ -221,7 +221,8 @@ img {
   .navbar,
   .navbar.scrolled {
     height: auto;
-    min-height: var(--nav-h);
+    /* Fixed bar height — do NOT use --nav-h here (that tracks open menu for the search strip) */
+    min-height: 72px;
     background: var(--primary);
     backdrop-filter: none;
   }

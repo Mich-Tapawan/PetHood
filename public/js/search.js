@@ -1,20 +1,41 @@
 document.addEventListener("DOMContentLoaded", () => {
   /* ── Navbar scroll effect ── */
   const navbar = document.getElementById("navbar");
+  const navbarNav = document.getElementById("navbarNav");
+  const DEFAULT_NAV_H = "72px";
 
-  /** Match --nav-h to real navbar height so fixed search strip and margins stay below open mobile menu */
+  /**
+   * Keep --nav-h in sync for the fixed search strip.
+   * When the mobile menu is open, --nav-h is the full expanded navbar.
+   * When collapsed, reset to the top bar only (never trap min-height on the nav itself).
+   */
   function syncNavHeight() {
     if (!navbar) return;
-    document.documentElement.style.setProperty(
-      "--nav-h",
-      `${navbar.offsetHeight}px`,
-    );
+
+    if (window.innerWidth >= 992) {
+      document.documentElement.style.setProperty("--nav-h", DEFAULT_NAV_H);
+      return;
+    }
+
+    const isOpen = navbarNav?.classList.contains("show");
+    if (isOpen) {
+      document.documentElement.style.setProperty(
+        "--nav-h",
+        `${navbar.offsetHeight}px`,
+      );
+    } else {
+      // Force default first so a stale expanded value can't inflate the measurement
+      document.documentElement.style.setProperty("--nav-h", DEFAULT_NAV_H);
+      document.documentElement.style.setProperty(
+        "--nav-h",
+        `${navbar.offsetHeight}px`,
+      );
+    }
   }
 
   syncNavHeight();
   window.addEventListener("resize", syncNavHeight, { passive: true });
 
-  const navbarNav = document.getElementById("navbarNav");
   navbarNav?.addEventListener("shown.bs.collapse", syncNavHeight);
   navbarNav?.addEventListener("hidden.bs.collapse", syncNavHeight);
 
@@ -31,13 +52,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchStrip = document.getElementById("search-container");
 
   burgerIcon?.addEventListener("click", () => {
-    // Let Bootstrap animate first, then adjust z-index and height
+    // Z-index only here — height sync waits for Bootstrap shown/hidden events
     setTimeout(() => {
       const navOpen = document.querySelector("#navbarNav.show");
       if (searchStrip) {
         searchStrip.style.zIndex = navOpen ? "1010" : "1020";
       }
-      syncNavHeight();
     }, 50);
   });
 
