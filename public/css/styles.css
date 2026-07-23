@@ -160,6 +160,10 @@ img {
   height: 100%;
 }
 
+.navbar-nav {
+  gap: 8px;
+}
+
 .nav-link {
   color: rgba(255, 255, 255, 0.8) !important;
   font-family: var(--font-body);
@@ -202,6 +206,19 @@ img {
 
 .navbar-toggler-icon {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 209, 141, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Mobile: navbar-expand-lg stacks collapse below the bar — fixed height clips the primary background */
+@media (max-width: 991.98px) {
+  .navbar {
+    height: auto;
+    min-height: var(--nav-h);
+  }
+
+  .navbar-collapse {
+    padding-top: 4px;
+    padding-bottom: 12px;
+  }
 }
 
 /* ════════════════════════════════════════════
@@ -275,7 +292,7 @@ img {
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(121, 61, 61, 0.75) 0%,
+    rgba(121, 61, 61, 0.623) 0%,
     rgba(20, 10, 10, 0.55) 100%
   );
 }

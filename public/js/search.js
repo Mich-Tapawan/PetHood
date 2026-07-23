@@ -1,6 +1,23 @@
 document.addEventListener("DOMContentLoaded", () => {
   /* ── Navbar scroll effect ── */
   const navbar = document.getElementById("navbar");
+
+  /** Match --nav-h to real navbar height so fixed search strip and margins stay below open mobile menu */
+  function syncNavHeight() {
+    if (!navbar) return;
+    document.documentElement.style.setProperty(
+      "--nav-h",
+      `${navbar.offsetHeight}px`,
+    );
+  }
+
+  syncNavHeight();
+  window.addEventListener("resize", syncNavHeight, { passive: true });
+
+  const navbarNav = document.getElementById("navbarNav");
+  navbarNav?.addEventListener("shown.bs.collapse", syncNavHeight);
+  navbarNav?.addEventListener("hidden.bs.collapse", syncNavHeight);
+
   window.addEventListener(
     "scroll",
     () => {
@@ -14,12 +31,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchStrip = document.getElementById("search-container");
 
   burgerIcon?.addEventListener("click", () => {
-    // Let Bootstrap animate first, then adjust z-index
+    // Let Bootstrap animate first, then adjust z-index and height
     setTimeout(() => {
       const navOpen = document.querySelector("#navbarNav.show");
       if (searchStrip) {
         searchStrip.style.zIndex = navOpen ? "1010" : "1020";
       }
+      syncNavHeight();
     }, 50);
   });
 
