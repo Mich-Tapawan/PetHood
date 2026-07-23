@@ -59,16 +59,31 @@ function showMap() {
   resultsPanel.classList.add("mobile-hidden");
   mapPanel.classList.remove("mobile-hidden");
   returnBtn.style.display = "flex";
+  // Leaflet needs a size refresh after the container becomes visible
+  requestAnimationFrame(() => {
+    map.invalidateSize();
+    setTimeout(() => map.invalidateSize(), 150);
+  });
+}
+
+/** Start with list-only on mobile; detail view opens after a card tap */
+if (isMobile()) {
+  mapPanel.classList.add("mobile-hidden");
+  returnBtn.style.display = "none";
 }
 
 /** Called on resize — restore desktop layout */
 window.addEventListener(
   "resize",
   () => {
-    resultsPanel.classList.remove("mobile-hidden");
-    mapPanel.classList.remove("mobile-hidden");
     if (!isMobile()) {
+      resultsPanel.classList.remove("mobile-hidden");
+      mapPanel.classList.remove("mobile-hidden");
       returnBtn.style.display = "none";
+    } else if (isClicked) {
+      showMap();
+    } else {
+      showResults();
     }
   },
   { passive: true },

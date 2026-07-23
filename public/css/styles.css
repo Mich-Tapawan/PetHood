@@ -126,14 +126,13 @@ img {
   height: var(--nav-h);
   background: var(--primary);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(8px);
   transition:
     background var(--transition),
     box-shadow var(--transition);
 }
 
 .navbar.scrolled {
-  background: rgba(144, 70, 70, 0.97);
+  background: var(--primary);
   box-shadow: var(--shadow-md);
 }
 
@@ -198,26 +197,48 @@ img {
 
 /* Mobile toggler */
 .navbar-toggler {
-  border: 2px solid var(--secondary);
+  border: 1.5px solid var(--secondary);
   border-radius: var(--radius-sm);
-  padding: 4px 8px;
+  padding: 3px 6px;
   background: transparent;
+  align-self: center;
+  width: auto;
+  height: auto;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
 }
 
 .navbar-toggler-icon {
+  width: 1.15rem;
+  height: 1.15rem;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 209, 141, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 /* Mobile: navbar-expand-lg stacks collapse below the bar — fixed height clips the primary background */
 @media (max-width: 991.98px) {
-  .navbar {
+  .navbar,
+  .navbar.scrolled {
     height: auto;
     min-height: var(--nav-h);
+    background: var(--primary);
+    backdrop-filter: none;
   }
 
   .navbar-collapse {
+    background: var(--primary);
     padding-top: 4px;
     padding-bottom: 12px;
+  }
+
+  .navbar-toggler {
+    padding: 2px 5px;
+  }
+
+  .navbar-toggler-icon {
+    width: 1.05rem;
+    height: 1.05rem;
   }
 }
 
